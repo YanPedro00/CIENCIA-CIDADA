@@ -35,6 +35,12 @@ RAILWAY_GIT_COMMIT_SHA = config('RAILWAY_GIT_COMMIT_SHA', default='')
 if RAILWAY_GIT_COMMIT_SHA:
     # Running on Railway
     ALLOWED_HOSTS += ['.railway.app', '.up.railway.app']
+    
+# CSRF Trusted Origins (para Railway e domínios personalizados)
+CSRF_TRUSTED_ORIGINS = [
+    'https://*.railway.app',
+    'https://*.up.railway.app',
+]
 
 
 # Application definition
