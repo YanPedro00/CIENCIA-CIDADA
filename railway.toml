@@ -3,7 +3,7 @@ builder = "nixpacks"
 buildCommand = "bash build.sh"
 
 [deploy]
-startCommand = "gunicorn config.wsgi --log-file -"
+startCommand = "bash start.sh"
 restartPolicyType = "on_failure"
 restartPolicyMaxRetries = 10
 
