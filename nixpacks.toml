@@ -1,5 +1,5 @@
 [phases.setup]
-nixPkgs = ['python310']
+nixPkgs = ['...', 'python310']
 
 [phases.install]
 cmds = ['pip install -r requirements.txt']
@@ -8,5 +8,5 @@ cmds = ['pip install -r requirements.txt']
 cmds = ['python manage.py collectstatic --noinput']
 
 [start]
-cmd = 'python manage.py migrate && gunicorn config.wsgi --bind 0.0.0.0:$PORT'
+cmd = 'python manage.py migrate && gunicorn config.wsgi:application'
 
