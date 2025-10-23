@@ -1,0 +1,41 @@
+{% extends 'base.html' %}
+
+{% block title %}Excluir Observação - Ciência Cidadã{% endblock %}
+
+{% block content %}
+<div class="container">
+    <div class="row justify-content-center">
+        <div class="col-md-6">
+            <div class="card shadow">
+                <div class="card-header bg-danger text-white">
+                    <h5 class="mb-0"><i class="bi bi-trash"></i> Confirmar Exclusão</h5>
+                </div>
+                <div class="card-body">
+                    <p>Tem certeza que deseja excluir esta observação?</p>
+                    
+                    <div class="alert alert-warning">
+                        <strong>{{ observacao.titulo }}</strong><br>
+                        <small class="text-muted">{{ observacao.descricao|truncatewords:30 }}</small>
+                    </div>
+                    
+                    <p class="text-danger"><strong>Esta ação não pode ser desfeita!</strong></p>
+                    
+                    <form method="post">
+                        {% csrf_token %}
+                        
+                        <div class="d-flex justify-content-between">
+                            <a href="{% url 'projeto_detalhe' observacao.projeto.slug %}" class="btn btn-secondary">
+                                <i class="bi bi-x-circle"></i> Cancelar
+                            </a>
+                            <button type="submit" class="btn btn-danger">
+                                <i class="bi bi-trash-fill"></i> Confirmar Exclusão
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+

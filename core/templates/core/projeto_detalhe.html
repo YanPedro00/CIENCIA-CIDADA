@@ -1,0 +1,358 @@
+{% extends 'base.html' %}
+
+{% block title %}{{ projeto.titulo }} - Ciência Cidadã{% endblock %}
+
+{% block content %}
+<div class="container">
+    <!-- Cabeçalho do Projeto -->
+    <div class="row mb-4">
+        <div class="col">
+            <nav aria-label="breadcrumb">
+                <ol class="breadcrumb">
+                    <li class="breadcrumb-item"><a href="{% url 'dashboard' %}">Dashboard</a></li>
+                    <li class="breadcrumb-item"><a href="{% url 'projetos_lista' %}">Projetos</a></li>
+                    <li class="breadcrumb-item active">{{ projeto.titulo }}</li>
+                </ol>
+            </nav>
+            
+            <h1 class="display-5">{{ projeto.titulo }}</h1>
+            <p class="lead text-muted">
+                <i class="bi bi-people"></i> {{ projeto.grupo.nome }} - {{ projeto.grupo.turma.nome }}
+            </p>
+            
+            <div class="d-flex gap-2 mb-3">
+                <span class="badge bg-info">{{ projeto.get_area_ciencia_display }}</span>
+                <span class="badge 
+                    {% if projeto.status == 'concluido' %}bg-success
+                    {% elif projeto.status == 'em_andamento' %}bg-primary
+                    {% else %}bg-secondary{% endif %}">
+                    {{ projeto.get_status_display }}
+                </span>
+                <span class="badge bg-warning text-dark">Fase {{ projeto.fase_atual }} de 6</span>
+            </div>
+            
+            <!-- Barra de Progresso -->
+            <div class="mb-3">
+                <div class="d-flex justify-content-between small mb-1">
+                    <span><strong>Progresso do Projeto</strong></span>
+                    <span>{{ projeto.get_progresso_percentual|floatformat:0 }}%</span>
+                </div>
+                <div class="progress progress-bar-fases">
+                    <div class="progress-bar bg-success progress-bar-striped 
+                                {% if projeto.status == 'em_andamento' %}progress-bar-animated{% endif %}" 
+                         style="width: {{ projeto.get_progresso_percentual }}%">
+                        {{ projeto.get_progresso_percentual|floatformat:0 }}%
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="row">
+        <!-- Fases do Projeto -->
+        <div class="col-lg-8 mb-4">
+            <!-- Fase 1 -->
+            <div class="card fase-card {% if projeto.fase1_aprovada %}aprovada{% elif projeto.fase_atual == 1 %}atual{% endif %} mb-3">
+                <div class="card-header d-flex justify-content-between align-items-center">
+                    <h5 class="mb-0">
+                        <span class="badge bg-primary me-2">1</span>
+                        Problema de Pesquisa
+                        {% if projeto.fase1_aprovada %}
+                            <i class="bi bi-check-circle-fill text-success"></i>
+                        {% endif %}
+                    </h5>
+                    {% if user.tipo == 'estudante' and user in projeto.grupo.membros.all %}
+                        <a href="{% url 'projeto_fase_editar' projeto.slug 1 %}" class="btn btn-sm btn-outline-primary">
+                            <i class="bi bi-pencil"></i> Editar
+                        </a>
+                    {% endif %}
+                </div>
+                <div class="card-body">
+                    {% if projeto.fase1_pergunta %}
+                        <p><strong>Pergunta de Pesquisa:</strong><br>{{ projeto.fase1_pergunta }}</p>
+                        <p><strong>Justificativa:</strong><br>{{ projeto.fase1_justificativa }}</p>
+                        <p><strong>Objetivos:</strong><br>{{ projeto.fase1_objetivos }}</p>
+                    {% else %}
+                        <p class="text-muted">Ainda não preenchido.</p>
+                    {% endif %}
+                </div>
+            </div>
+
+            <!-- Fase 2 -->
+            <div class="card fase-card {% if projeto.fase2_aprovada %}aprovada{% elif projeto.fase_atual == 2 %}atual{% endif %} mb-3">
+                <div class="card-header d-flex justify-content-between align-items-center">
+                    <h5 class="mb-0">
+                        <span class="badge bg-primary me-2">2</span>
+                        Hipótese
+                        {% if projeto.fase2_aprovada %}
+                            <i class="bi bi-check-circle-fill text-success"></i>
+                        {% endif %}
+                    </h5>
+                    {% if user.tipo == 'estudante' and user in projeto.grupo.membros.all and projeto.fase_atual >= 2 %}
+                        <a href="{% url 'projeto_fase_editar' projeto.slug 2 %}" class="btn btn-sm btn-outline-primary">
+                            <i class="bi bi-pencil"></i> Editar
+                        </a>
+                    {% endif %}
+                </div>
+                <div class="card-body">
+                    {% if projeto.fase2_hipotese_principal %}
+                        <p><strong>Hipótese Principal:</strong><br>{{ projeto.fase2_hipotese_principal }}</p>
+                        <p><strong>Fundamentação:</strong><br>{{ projeto.fase2_fundamentacao }}</p>
+                    {% else %}
+                        <p class="text-muted">Ainda não preenchido.</p>
+                    {% endif %}
+                </div>
+            </div>
+
+            <!-- Fase 3 -->
+            <div class="card fase-card {% if projeto.fase3_aprovada %}aprovada{% elif projeto.fase_atual == 3 %}atual{% endif %} mb-3">
+                <div class="card-header d-flex justify-content-between align-items-center">
+                    <h5 class="mb-0">
+                        <span class="badge bg-primary me-2">3</span>
+                        Metodologia
+                        {% if projeto.fase3_aprovada %}
+                            <i class="bi bi-check-circle-fill text-success"></i>
+                        {% endif %}
+                    </h5>
+                    {% if user.tipo == 'estudante' and user in projeto.grupo.membros.all and projeto.fase_atual >= 3 %}
+                        <a href="{% url 'projeto_fase_editar' projeto.slug 3 %}" class="btn btn-sm btn-outline-primary">
+                            <i class="bi bi-pencil"></i> Editar
+                        </a>
+                    {% endif %}
+                </div>
+                <div class="card-body">
+                    {% if projeto.fase3_metodo_coleta %}
+                        <p><strong>Método de Coleta:</strong><br>{{ projeto.fase3_metodo_coleta }}</p>
+                        <p><strong>Materiais:</strong><br>{{ projeto.fase3_materiais }}</p>
+                        <p><strong>Cronograma:</strong><br>{{ projeto.fase3_cronograma }}</p>
+                        {% if projeto.fase3_local %}
+                            <p><strong>Local:</strong> {{ projeto.fase3_local }}</p>
+                        {% endif %}
+                    {% else %}
+                        <p class="text-muted">Ainda não preenchido.</p>
+                    {% endif %}
+                </div>
+            </div>
+
+            <!-- Fase 4 -->
+            <div class="card fase-card {% if projeto.fase4_aprovada %}aprovada{% elif projeto.fase_atual == 4 %}atual{% endif %} mb-3">
+                <div class="card-header d-flex justify-content-between align-items-center">
+                    <h5 class="mb-0">
+                        <span class="badge bg-primary me-2">4</span>
+                        Coleta de Dados
+                        {% if projeto.fase4_aprovada %}
+                            <i class="bi bi-check-circle-fill text-success"></i>
+                        {% endif %}
+                    </h5>
+                    {% if user.tipo == 'estudante' and user in projeto.grupo.membros.all and projeto.fase_atual >= 4 %}
+                        <a href="{% url 'observacao_criar' projeto.slug %}" class="btn btn-sm btn-success">
+                            <i class="bi bi-plus"></i> Adicionar Observação
+                        </a>
+                    {% endif %}
+                </div>
+                <div class="card-body">
+                    {% if observacoes %}
+                        <p class="text-muted mb-2">Total de observações: {{ observacoes|length }}</p>
+                        <div class="list-group">
+                            {% for obs in observacoes|slice:":3" %}
+                            <div class="list-group-item">
+                                <div class="d-flex justify-content-between">
+                                    <h6 class="mb-1">{{ obs.titulo }}</h6>
+                                    <small>{{ obs.data_hora_coleta|date:"d/m/Y H:i" }}</small>
+                                </div>
+                                <p class="mb-1 small">{{ obs.descricao|truncatewords:15 }}</p>
+                                <small class="text-muted">Por {{ obs.usuario.get_full_name }}</small>
+                            </div>
+                            {% endfor %}
+                        </div>
+                        {% if observacoes|length > 3 %}
+                            <p class="text-muted mt-2 mb-0 small">
+                                E mais {{ observacoes|length|add:"-3" }} observações...
+                            </p>
+                        {% endif %}
+                    {% else %}
+                        <p class="text-muted">Nenhuma observação coletada ainda.</p>
+                    {% endif %}
+                </div>
+            </div>
+
+            <!-- Fase 5 -->
+            <div class="card fase-card {% if projeto.fase5_aprovada %}aprovada{% elif projeto.fase_atual == 5 %}atual{% endif %} mb-3">
+                <div class="card-header d-flex justify-content-between align-items-center">
+                    <h5 class="mb-0">
+                        <span class="badge bg-primary me-2">5</span>
+                        Análise de Dados
+                        {% if projeto.fase5_aprovada %}
+                            <i class="bi bi-check-circle-fill text-success"></i>
+                        {% endif %}
+                    </h5>
+                    {% if user.tipo == 'estudante' and user in projeto.grupo.membros.all and projeto.fase_atual >= 5 %}
+                        <a href="{% url 'projeto_fase_editar' projeto.slug 5 %}" class="btn btn-sm btn-outline-primary">
+                            <i class="bi bi-pencil"></i> Editar
+                        </a>
+                    {% endif %}
+                </div>
+                <div class="card-body">
+                    {% if projeto.fase5_organizacao_dados %}
+                        <p><strong>Organização dos Dados:</strong><br>{{ projeto.fase5_organizacao_dados }}</p>
+                        <p><strong>Interpretação:</strong><br>{{ projeto.fase5_interpretacao }}</p>
+                        <p><strong>Discussão:</strong><br>{{ projeto.fase5_discussao }}</p>
+                    {% else %}
+                        <p class="text-muted">Ainda não preenchido.</p>
+                    {% endif %}
+                </div>
+            </div>
+
+            <!-- Fase 6 -->
+            <div class="card fase-card {% if projeto.fase6_aprovada %}aprovada{% elif projeto.fase_atual == 6 %}atual{% endif %} mb-3">
+                <div class="card-header d-flex justify-content-between align-items-center">
+                    <h5 class="mb-0">
+                        <span class="badge bg-primary me-2">6</span>
+                        Conclusão
+                        {% if projeto.fase6_aprovada %}
+                            <i class="bi bi-check-circle-fill text-success"></i>
+                        {% endif %}
+                    </h5>
+                    {% if user.tipo == 'estudante' and user in projeto.grupo.membros.all and projeto.fase_atual >= 6 %}
+                        <a href="{% url 'projeto_fase_editar' projeto.slug 6 %}" class="btn btn-sm btn-outline-primary">
+                            <i class="bi bi-pencil"></i> Editar
+                        </a>
+                    {% endif %}
+                </div>
+                <div class="card-body">
+                    {% if projeto.fase6_conclusao %}
+                        <p><strong>Hipótese Confirmada?</strong> 
+                            <span class="badge bg-info">{{ projeto.get_fase6_hipotese_confirmada_display }}</span>
+                        </p>
+                        <p><strong>Conclusão:</strong><br>{{ projeto.fase6_conclusao }}</p>
+                        <p><strong>Aprendizados:</strong><br>{{ projeto.fase6_aprendizados }}</p>
+                        <p><strong>Limitações:</strong><br>{{ projeto.fase6_limitacoes }}</p>
+                    {% else %}
+                        <p class="text-muted">Ainda não preenchido.</p>
+                    {% endif %}
+                </div>
+            </div>
+
+            <!-- Avaliação Final -->
+            {% if avaliacao %}
+            <div class="card border-success">
+                <div class="card-header bg-success text-white">
+                    <h5 class="mb-0"><i class="bi bi-star-fill"></i> Avaliação Final</h5>
+                </div>
+                <div class="card-body">
+                    <h3 class="text-center">Conceito: <span class="badge bg-success">{{ avaliacao.conceito }}</span></h3>
+                    <p class="text-center text-muted">Média: {{ avaliacao.media_notas|floatformat:1 }}/10</p>
+                    
+                    <hr>
+                    
+                    {% if avaliacao.comentarios %}
+                        <p><strong>Comentários:</strong><br>{{ avaliacao.comentarios }}</p>
+                    {% endif %}
+                    {% if avaliacao.pontos_fortes %}
+                        <p><strong>Pontos Fortes:</strong><br>{{ avaliacao.pontos_fortes }}</p>
+                    {% endif %}
+                    {% if avaliacao.pontos_melhorar %}
+                        <p><strong>Pontos a Melhorar:</strong><br>{{ avaliacao.pontos_melhorar }}</p>
+                    {% endif %}
+                </div>
+            </div>
+            {% endif %}
+        </div>
+
+        <!-- Sidebar -->
+        <div class="col-lg-4">
+            <!-- Informações do Grupo -->
+            <div class="card mb-3">
+                <div class="card-header bg-info text-white">
+                    <h6 class="mb-0"><i class="bi bi-people"></i> Grupo</h6>
+                </div>
+                <div class="card-body">
+                    <h6>{{ projeto.grupo.nome }}</h6>
+                    <p class="small text-muted mb-2">Membros:</p>
+                    <ul class="list-unstyled small">
+                        {% for membro in projeto.grupo.membros.all %}
+                        <li>
+                            <i class="bi bi-person-fill"></i> {{ membro.get_full_name }}
+                            {% if membro == projeto.grupo.lider %}
+                                <span class="badge bg-warning text-dark">Líder</span>
+                            {% endif %}
+                        </li>
+                        {% endfor %}
+                    </ul>
+                </div>
+            </div>
+
+            <!-- Ações do Professor -->
+            {% if user.tipo == 'professor' and user == projeto.grupo.turma.professor %}
+            <div class="card mb-3">
+                <div class="card-header bg-warning text-dark">
+                    <h6 class="mb-0"><i class="bi bi-tools"></i> Ações do Professor</h6>
+                </div>
+                <div class="card-body">
+                    <a href="{% url 'feedback_criar' projeto.slug projeto.fase_atual %}" 
+                       class="btn btn-sm btn-outline-primary w-100 mb-2">
+                        <i class="bi bi-chat-left-text"></i> Dar Feedback
+                    </a>
+                    
+                    {% if not projeto.fase1_aprovada and projeto.fase_atual == 1 %}
+                        <a href="{% url 'aprovar_fase' projeto.slug 1 %}" class="btn btn-sm btn-success w-100 mb-2">
+                            <i class="bi bi-check-circle"></i> Aprovar Fase 1
+                        </a>
+                    {% elif not projeto.fase2_aprovada and projeto.fase_atual == 2 %}
+                        <a href="{% url 'aprovar_fase' projeto.slug 2 %}" class="btn btn-sm btn-success w-100 mb-2">
+                            <i class="bi bi-check-circle"></i> Aprovar Fase 2
+                        </a>
+                    {% elif not projeto.fase3_aprovada and projeto.fase_atual == 3 %}
+                        <a href="{% url 'aprovar_fase' projeto.slug 3 %}" class="btn btn-sm btn-success w-100 mb-2">
+                            <i class="bi bi-check-circle"></i> Aprovar Fase 3
+                        </a>
+                    {% elif not projeto.fase4_aprovada and projeto.fase_atual == 4 %}
+                        <a href="{% url 'aprovar_fase' projeto.slug 4 %}" class="btn btn-sm btn-success w-100 mb-2">
+                            <i class="bi bi-check-circle"></i> Aprovar Fase 4
+                        </a>
+                    {% elif not projeto.fase5_aprovada and projeto.fase_atual == 5 %}
+                        <a href="{% url 'aprovar_fase' projeto.slug 5 %}" class="btn btn-sm btn-success w-100 mb-2">
+                            <i class="bi bi-check-circle"></i> Aprovar Fase 5
+                        </a>
+                    {% elif not projeto.fase6_aprovada and projeto.fase_atual == 6 %}
+                        <a href="{% url 'aprovar_fase' projeto.slug 6 %}" class="btn btn-sm btn-success w-100 mb-2">
+                            <i class="bi bi-check-circle"></i> Aprovar Fase 6 e Concluir
+                        </a>
+                    {% endif %}
+                    
+                    {% if projeto.status == 'concluido' %}
+                        <a href="{% url 'projeto_avaliar' projeto.slug %}" class="btn btn-sm btn-warning w-100">
+                            <i class="bi bi-star"></i> Avaliar Projeto
+                        </a>
+                    {% endif %}
+                </div>
+            </div>
+            {% endif %}
+
+            <!-- Feedbacks -->
+            {% if feedbacks %}
+            <div class="card">
+                <div class="card-header">
+                    <h6 class="mb-0"><i class="bi bi-chat-left-text"></i> Feedbacks</h6>
+                </div>
+                <div class="list-group list-group-flush">
+                    {% for feedback in feedbacks %}
+                    <div class="list-group-item">
+                        <div class="d-flex justify-content-between">
+                            <small class="text-muted">Fase {{ feedback.fase }}</small>
+                            {% if feedback.aprovado %}
+                                <span class="badge bg-success">Aprovado</span>
+                            {% endif %}
+                        </div>
+                        <p class="small mb-1">{{ feedback.comentario|truncatewords:20 }}</p>
+                        <small class="text-muted">Prof. {{ feedback.professor.get_full_name }}</small>
+                    </div>
+                    {% endfor %}
+                </div>
+            </div>
+            {% endif %}
+        </div>
+    </div>
+</div>
+{% endblock %}
+

@@ -1,0 +1,92 @@
+{% extends 'base.html' %}
+
+{% block title %}{{ titulo }} - Ciência Cidadã{% endblock %}
+
+{% block content %}
+<div class="container">
+    <div class="row justify-content-center">
+        <div class="col-md-8">
+            <nav aria-label="breadcrumb">
+                <ol class="breadcrumb">
+                    <li class="breadcrumb-item"><a href="{% url 'dashboard' %}">Dashboard</a></li>
+                    <li class="breadcrumb-item"><a href="{% url 'projeto_detalhe' projeto.slug %}">{{ projeto.titulo }}</a></li>
+                    <li class="breadcrumb-item active">{{ titulo }}</li>
+                </ol>
+            </nav>
+
+            <div class="card">
+                <div class="card-header bg-primary text-white">
+                    <h4 class="mb-0"><i class="bi bi-eye"></i> {{ titulo }}</h4>
+                    <small>Fase 4: Coleta de Dados</small>
+                </div>
+                <div class="card-body">
+                    <form method="post" enctype="multipart/form-data">
+                        {% csrf_token %}
+                        
+                        <div class="mb-3">
+                            <label for="id_titulo" class="form-label">Título da Observação *</label>
+                            <input type="text" name="titulo" class="form-control" id="id_titulo" required>
+                        </div>
+
+                        <div class="mb-3">
+                            <label for="id_descricao" class="form-label">Descrição *</label>
+                            <textarea name="descricao" class="form-control" id="id_descricao" rows="4" required></textarea>
+                        </div>
+
+                        <div class="mb-3">
+                            <label for="id_foto1" class="form-label">Fotos (opcional)</label>
+                            <input type="file" name="foto1" class="form-control mb-2" id="id_foto1" accept="image/*">
+                            <input type="file" name="foto2" class="form-control mb-2" accept="image/*">
+                            <input type="file" name="foto3" class="form-control" accept="image/*">
+                        </div>
+
+                        <div class="row">
+                            <div class="col-md-12 mb-3">
+                                <label for="id_local_descricao" class="form-label">Local da Observação</label>
+                                <input type="text" name="local_descricao" class="form-control" id="id_local_descricao" 
+                                       placeholder="Ex: Margem do rio próximo à ponte">
+                            </div>
+                        </div>
+
+                        <div class="row">
+                            <div class="col-md-6 mb-3">
+                                <label for="id_latitude" class="form-label">Latitude (opcional)</label>
+                                <input type="number" name="latitude" class="form-control" id="id_latitude" 
+                                       step="0.000001" placeholder="-23.550520">
+                            </div>
+                            <div class="col-md-6 mb-3">
+                                <label for="id_longitude" class="form-label">Longitude (opcional)</label>
+                                <input type="number" name="longitude" class="form-control" id="id_longitude" 
+                                       step="0.000001" placeholder="-46.633308">
+                            </div>
+                        </div>
+
+                        <div class="mb-3">
+                            <label for="id_data_hora_coleta" class="form-label">Data e Hora da Coleta *</label>
+                            <input type="datetime-local" name="data_hora_coleta" class="form-control" 
+                                   id="id_data_hora_coleta" required>
+                        </div>
+
+                        <div class="mb-3">
+                            <label for="id_dados_json" class="form-label">Dados Adicionais (JSON - opcional)</label>
+                            <textarea name="dados_json" class="form-control" id="id_dados_json" rows="3" 
+                                      placeholder='{"temperatura": 25, "ph": 7.5, "cor": "cristalina"}'></textarea>
+                            <small class="text-muted">Formato JSON para dados estruturados personalizados</small>
+                        </div>
+
+                        <div class="d-flex justify-content-between">
+                            <a href="{% url 'projeto_detalhe' projeto.slug %}" class="btn btn-secondary">
+                                <i class="bi bi-arrow-left"></i> Voltar
+                            </a>
+                            <button type="submit" class="btn btn-success">
+                                <i class="bi bi-check-circle"></i> Salvar Observação
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+

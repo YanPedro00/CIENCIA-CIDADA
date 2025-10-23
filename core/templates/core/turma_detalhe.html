@@ -1,0 +1,134 @@
+{% extends 'base.html' %}
+
+{% block title %}{{ turma.nome }} - Ciência Cidadã{% endblock %}
+
+{% block content %}
+<div class="container">
+    <nav aria-label="breadcrumb">
+        <ol class="breadcrumb">
+            <li class="breadcrumb-item"><a href="{% url 'dashboard' %}">Dashboard</a></li>
+            <li class="breadcrumb-item"><a href="{% url 'turmas_lista' %}">Turmas</a></li>
+            <li class="breadcrumb-item active">{{ turma.nome }}</li>
+        </ol>
+    </nav>
+
+    <div class="row mb-4">
+        <div class="col">
+            <h1 class="display-5">{{ turma.nome }}</h1>
+            <p class="lead text-muted">{{ turma.descricao }}</p>
+            <div class="d-flex gap-2">
+                <span class="badge bg-info">{{ turma.ano_semestre }}</span>
+                {% if turma.ativa %}
+                    <span class="badge bg-success">Ativa</span>
+                {% else %}
+                    <span class="badge bg-secondary">Inativa</span>
+                {% endif %}
+                <span class="badge bg-light text-dark">Código: <strong>{{ turma.codigo_acesso }}</strong></span>
+            </div>
+        </div>
+        {% if user == turma.professor %}
+        <div class="col-auto">
+            <a href="{% url 'turma_editar' turma.pk %}" class="btn btn-primary">
+                <i class="bi bi-pencil"></i> Editar
+            </a>
+            <a href="{% url 'grupo_criar' turma.pk %}" class="btn btn-success">
+                <i class="bi bi-plus"></i> Criar Grupo
+            </a>
+        </div>
+        {% endif %}
+    </div>
+
+    <div class="row">
+        <div class="col-md-8">
+            <!-- Grupos -->
+            <div class="card mb-3">
+                <div class="card-header bg-warning text-white">
+                    <h5 class="mb-0"><i class="bi bi-diagram-3"></i> Grupos ({{ grupos|length }})</h5>
+                </div>
+                {% if grupos %}
+                <div class="list-group list-group-flush">
+                    {% for grupo in grupos %}
+                    <div class="list-group-item">
+                        <div class="d-flex justify-content-between align-items-center">
+                            <div>
+                                <h6 class="mb-1">{{ grupo.nome }}</h6>
+                                <p class="mb-1 small text-muted">
+                                    {{ grupo.total_membros }} membros
+                                    {% if grupo.lider %}
+                                        | Líder: {{ grupo.lider.get_full_name }}
+                                    {% endif %}
+                                </p>
+                                <div class="mt-2">
+                                    {% for membro in grupo.membros.all|slice:":5" %}
+                                        <span class="badge bg-light text-dark">{{ membro.get_full_name }}</span>
+                                    {% endfor %}
+                                    {% if grupo.total_membros > 5 %}
+                                        <span class="badge bg-secondary">+{{ grupo.total_membros|add:"-5" }}</span>
+                                    {% endif %}
+                                </div>
+                            </div>
+                            <div>
+                                <a href="{% url 'grupo_detalhe' grupo.pk %}" class="btn btn-sm btn-outline-primary">
+                                    Ver Grupo
+                                </a>
+                                {% if user.tipo == 'estudante' and user not in grupo.membros.all and grupo.pode_adicionar_membro %}
+                                    <a href="{% url 'grupo_entrar' turma.pk grupo.pk %}" class="btn btn-sm btn-success">
+                                        Entrar
+                                    </a>
+                                {% endif %}
+                            </div>
+                        </div>
+                    </div>
+                    {% endfor %}
+                </div>
+                {% else %}
+                <div class="card-body text-center">
+                    <p class="text-muted">Nenhum grupo criado ainda.</p>
+                    {% if user == turma.professor %}
+                        <a href="{% url 'grupo_criar' turma.pk %}" class="btn btn-primary">
+                            <i class="bi bi-plus"></i> Criar Primeiro Grupo
+                        </a>
+                    {% endif %}
+                </div>
+                {% endif %}
+            </div>
+        </div>
+
+        <div class="col-md-4">
+            <!-- Informações -->
+            <div class="card mb-3">
+                <div class="card-header bg-primary text-white">
+                    <h6 class="mb-0"><i class="bi bi-info-circle"></i> Informações</h6>
+                </div>
+                <div class="card-body">
+                    <p><strong>Professor:</strong><br>{{ turma.professor.get_full_name }}</p>
+                    <p><strong>Estudantes:</strong> {{ estudantes|length }}</p>
+                    <p><strong>Grupos:</strong> {{ grupos|length }} / {{ turma.max_grupos }}</p>
+                    <p><strong>Criada em:</strong><br>{{ turma.criada_em|date:"d/m/Y" }}</p>
+                </div>
+            </div>
+
+            <!-- Estudantes -->
+            <div class="card">
+                <div class="card-header bg-info text-white">
+                    <h6 class="mb-0"><i class="bi bi-people"></i> Estudantes ({{ estudantes|length }})</h6>
+                </div>
+                {% if estudantes %}
+                <div class="list-group list-group-flush" style="max-height: 400px; overflow-y: auto;">
+                    {% for item in estudantes %}
+                    <div class="list-group-item small">
+                        <i class="bi bi-person-fill"></i> {{ item.estudante.get_full_name }}
+                    </div>
+                    {% endfor %}
+                </div>
+                {% else %}
+                <div class="card-body text-center">
+                    <p class="text-muted small mb-0">Nenhum estudante inscrito.</p>
+                </div>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+

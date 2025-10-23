@@ -1,0 +1,81 @@
+{% extends 'base.html' %}
+
+{% block title %}Minhas Turmas - Ciência Cidadã{% endblock %}
+
+{% block content %}
+<div class="container">
+    <div class="row mb-4">
+        <div class="col">
+            <h1 class="display-5">
+                <i class="bi bi-people text-primary"></i> Minhas Turmas
+            </h1>
+        </div>
+        <div class="col-auto">
+            <a href="{% url 'turma_criar' %}" class="btn btn-primary">
+                <i class="bi bi-plus-circle"></i> Nova Turma
+            </a>
+        </div>
+    </div>
+
+    {% if turmas %}
+        <div class="row">
+            {% for turma in turmas %}
+            <div class="col-md-6 mb-3">
+                <div class="card h-100">
+                    <div class="card-body">
+                        <div class="d-flex justify-content-between align-items-start">
+                            <h5 class="card-title">{{ turma.nome }}</h5>
+                            {% if turma.ativa %}
+                                <span class="badge bg-success">Ativa</span>
+                            {% else %}
+                                <span class="badge bg-secondary">Inativa</span>
+                            {% endif %}
+                        </div>
+                        <p class="text-muted small mb-2">
+                            <i class="bi bi-calendar"></i> {{ turma.ano_semestre }}
+                        </p>
+                        <p class="card-text text-muted small">
+                            {{ turma.descricao|truncatewords:15 }}
+                        </p>
+                        <div class="d-flex justify-content-between align-items-center mt-3">
+                            <div>
+                                <span class="badge bg-info me-2">
+                                    <i class="bi bi-person"></i> {{ turma.num_estudantes }}
+                                </span>
+                                <span class="badge bg-secondary">
+                                    <i class="bi bi-diagram-3"></i> {{ turma.num_grupos }}
+                                </span>
+                            </div>
+                            <div>
+                                <span class="badge bg-light text-dark">
+                                    Código: <strong>{{ turma.codigo_acesso }}</strong>
+                                </span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="card-footer bg-transparent">
+                        <a href="{% url 'turma_detalhe' turma.pk %}" class="btn btn-sm btn-outline-primary">
+                            <i class="bi bi-eye"></i> Ver Detalhes
+                        </a>
+                        <a href="{% url 'turma_editar' turma.pk %}" class="btn btn-sm btn-outline-secondary">
+                            <i class="bi bi-pencil"></i> Editar
+                        </a>
+                    </div>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+    {% else %}
+        <div class="card">
+            <div class="card-body text-center py-5">
+                <i class="bi bi-inbox text-muted" style="font-size: 4rem;"></i>
+                <p class="text-muted mt-3">Você ainda não criou nenhuma turma.</p>
+                <a href="{% url 'turma_criar' %}" class="btn btn-primary">
+                    <i class="bi bi-plus"></i> Criar Primeira Turma
+                </a>
+            </div>
+        </div>
+    {% endif %}
+</div>
+{% endblock %}
+

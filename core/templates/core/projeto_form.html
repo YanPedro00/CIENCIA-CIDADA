@@ -1,0 +1,93 @@
+{% extends 'base.html' %}
+
+{% block title %}{{ titulo }} - Ciência Cidadã{% endblock %}
+
+{% block content %}
+<div class="container">
+    <div class="row justify-content-center">
+        <div class="col-md-8">
+            <nav aria-label="breadcrumb">
+                <ol class="breadcrumb">
+                    <li class="breadcrumb-item"><a href="{% url 'dashboard' %}">Dashboard</a></li>
+                    <li class="breadcrumb-item"><a href="{% url 'grupo_detalhe' grupo.pk %}">{{ grupo.nome }}</a></li>
+                    <li class="breadcrumb-item active">{{ titulo }}</li>
+                </ol>
+            </nav>
+
+            <div class="card">
+                <div class="card-header bg-primary text-white">
+                    <h4 class="mb-0"><i class="bi bi-journal-plus"></i> {{ titulo }}</h4>
+                </div>
+                <div class="card-body">
+                    <div class="alert alert-info">
+                        <i class="bi bi-info-circle"></i>
+                        <strong>Bem-vindo!</strong> Você está criando o projeto científico do grupo <strong>{{ grupo.nome }}</strong>. 
+                        Comece preenchendo as informações básicas abaixo. Depois você passará pelas 6 fases do método científico.
+                    </div>
+
+                    <form method="post">
+                        {% csrf_token %}
+                        
+                        <div class="mb-3">
+                            <label for="id_titulo" class="form-label">Título do Projeto *</label>
+                            <input type="text" name="titulo" class="form-control" id="id_titulo" 
+                                   placeholder="Ex: Qualidade da Água do Rio Municipal" required>
+                            {% if form.titulo.errors %}
+                                <div class="text-danger small">{{ form.titulo.errors }}</div>
+                            {% endif %}
+                        </div>
+
+                        <div class="mb-3">
+                            <label for="id_area_ciencia" class="form-label">Área da Ciência *</label>
+                            <select name="area_ciencia" class="form-select" id="id_area_ciencia" required>
+                                <option value="">Selecione...</option>
+                                <option value="biologia">Biologia</option>
+                                <option value="fisica">Física</option>
+                                <option value="quimica">Química</option>
+                                <option value="matematica">Matemática</option>
+                                <option value="ciencias_ambientais">Ciências Ambientais</option>
+                                <option value="ciencias_sociais">Ciências Sociais</option>
+                                <option value="astronomia">Astronomia</option>
+                                <option value="geologia">Geologia</option>
+                                <option value="saude">Saúde</option>
+                                <option value="tecnologia">Tecnologia</option>
+                                <option value="outro">Outro</option>
+                            </select>
+                            {% if form.area_ciencia.errors %}
+                                <div class="text-danger small">{{ form.area_ciencia.errors }}</div>
+                            {% endif %}
+                        </div>
+
+                        <div class="mb-3">
+                            <label for="id_descricao_breve" class="form-label">Descrição Breve do Projeto *</label>
+                            <textarea name="descricao_breve" class="form-control" id="id_descricao_breve" 
+                                      rows="4" maxlength="500" 
+                                      placeholder="Descreva em poucas palavras do que se trata o projeto..." required></textarea>
+                            <small class="text-muted">Máximo 500 caracteres</small>
+                            {% if form.descricao_breve.errors %}
+                                <div class="text-danger small">{{ form.descricao_breve.errors }}</div>
+                            {% endif %}
+                        </div>
+
+                        <div class="alert alert-success">
+                            <i class="bi bi-lightbulb"></i>
+                            <strong>Próximos passos:</strong> Após criar o projeto, você será direcionado para a Fase 1 
+                            onde definirá o problema de pesquisa.
+                        </div>
+
+                        <div class="d-flex justify-content-between">
+                            <a href="{% url 'grupo_detalhe' grupo.pk %}" class="btn btn-secondary">
+                                <i class="bi bi-arrow-left"></i> Voltar
+                            </a>
+                            <button type="submit" class="btn btn-success btn-lg">
+                                <i class="bi bi-check-circle"></i> Criar Projeto e Começar
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+

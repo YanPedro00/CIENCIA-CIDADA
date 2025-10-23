@@ -1,0 +1,67 @@
+{% extends 'base.html' %}
+
+{% block title %}{{ titulo }} - Ciência Cidadã{% endblock %}
+
+{% block content %}
+<div class="container">
+    <div class="row justify-content-center">
+        <div class="col-md-8">
+            <nav aria-label="breadcrumb">
+                <ol class="breadcrumb">
+                    <li class="breadcrumb-item"><a href="{% url 'dashboard' %}">Dashboard</a></li>
+                    <li class="breadcrumb-item"><a href="{% url 'projeto_detalhe' projeto.slug %}">{{ projeto.titulo }}</a></li>
+                    <li class="breadcrumb-item active">Feedback</li>
+                </ol>
+            </nav>
+
+            <div class="card">
+                <div class="card-header bg-warning text-white">
+                    <h4 class="mb-0"><i class="bi bi-chat-left-text"></i> {{ titulo }}</h4>
+                    <small>{{ projeto.grupo.nome }}</small>
+                </div>
+                <div class="card-body">
+                    <form method="post">
+                        {% csrf_token %}
+                        
+                        <div class="alert alert-info">
+                            <i class="bi bi-info-circle"></i>
+                            <strong>Orientação:</strong> Dê um feedback construtivo ao grupo sobre esta fase do projeto.
+                        </div>
+
+                        <div class="mb-3">
+                            <label for="id_comentario" class="form-label">Comentário *</label>
+                            <textarea name="comentario" class="form-control" id="id_comentario" rows="6" 
+                                      placeholder="Escreva seu feedback detalhado..." required></textarea>
+                        </div>
+
+                        <div class="mb-3">
+                            <div class="form-check form-switch">
+                                <input class="form-check-input" type="checkbox" name="aprovado" id="id_aprovado">
+                                <label class="form-check-label" for="id_aprovado">
+                                    <strong>Aprovar esta fase</strong>
+                                    <small class="text-muted d-block">Marque se o grupo pode avançar para a próxima fase</small>
+                                </label>
+                            </div>
+                        </div>
+
+                        <div class="alert alert-success">
+                            <i class="bi bi-check-circle"></i>
+                            Se você aprovar, o grupo poderá trabalhar na próxima fase automaticamente.
+                        </div>
+
+                        <div class="d-flex justify-content-between">
+                            <a href="{% url 'projeto_detalhe' projeto.slug %}" class="btn btn-secondary">
+                                <i class="bi bi-arrow-left"></i> Voltar
+                            </a>
+                            <button type="submit" class="btn btn-primary">
+                                <i class="bi bi-send"></i> Enviar Feedback
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+

@@ -1,0 +1,145 @@
+{% extends 'base.html' %}
+
+{% block title %}Dashboard Professor - Ciência Cidadã{% endblock %}
+
+{% block content %}
+<div class="container">
+    <div class="row mb-4">
+        <div class="col">
+            <h1 class="display-5">
+                <i class="bi bi-person-workspace text-primary"></i> 
+                Dashboard do Professor
+            </h1>
+            <p class="lead text-muted">Bem-vindo, {{ user.get_full_name|default:user.username }}!</p>
+        </div>
+        <div class="col-auto">
+            <a href="{% url 'turma_criar' %}" class="btn btn-primary btn-lg">
+                <i class="bi bi-plus-circle"></i> Nova Turma
+            </a>
+        </div>
+    </div>
+
+    <!-- Estatísticas Rápidas -->
+    <div class="row mb-4">
+        <div class="col-md-4">
+            <div class="card bg-primary text-white">
+                <div class="card-body">
+                    <h3 class="card-title">{{ total_turmas }}</h3>
+                    <p class="card-text">
+                        <i class="bi bi-people"></i> Turmas Ativas
+                    </p>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="card bg-warning text-white">
+                <div class="card-body">
+                    <h3 class="card-title">{{ projetos_pendentes|length }}</h3>
+                    <p class="card-text">
+                        <i class="bi bi-hourglass-split"></i> Projetos Aguardando Aprovação
+                    </p>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="card bg-success text-white">
+                <div class="card-body">
+                    <h3 class="card-title">{{ turmas|length }}</h3>
+                    <p class="card-text">
+                        <i class="bi bi-journal-check"></i> Total de Turmas
+                    </p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Projetos Pendentes -->
+    {% if projetos_pendentes %}
+    <div class="card mb-4">
+        <div class="card-header bg-warning text-white">
+            <h5 class="mb-0"><i class="bi bi-exclamation-triangle"></i> Projetos Aguardando Aprovação</h5>
+        </div>
+        <div class="list-group list-group-flush">
+            {% for projeto in projetos_pendentes %}
+            <a href="{% url 'projeto_detalhe' projeto.slug %}" class="list-group-item list-group-item-action">
+                <div class="d-flex w-100 justify-content-between">
+                    <h6 class="mb-1">{{ projeto.titulo }}</h6>
+                    <small class="text-muted">Fase {{ projeto.fase_atual }}</small>
+                </div>
+                <p class="mb-1 text-muted small">
+                    <i class="bi bi-people"></i> {{ projeto.grupo.nome }} - {{ projeto.grupo.turma.nome }}
+                </p>
+            </a>
+            {% endfor %}
+        </div>
+    </div>
+    {% endif %}
+
+    <!-- Minhas Turmas -->
+    <div class="card">
+        <div class="card-header bg-primary text-white">
+            <h5 class="mb-0"><i class="bi bi-people"></i> Minhas Turmas</h5>
+        </div>
+        <div class="card-body">
+            {% if turmas %}
+                <div class="row">
+                    {% for turma in turmas %}
+                    <div class="col-md-6 mb-3">
+                        <div class="card h-100">
+                            <div class="card-body">
+                                <div class="d-flex justify-content-between align-items-start">
+                                    <h5 class="card-title">{{ turma.nome }}</h5>
+                                    {% if turma.ativa %}
+                                        <span class="badge bg-success">Ativa</span>
+                                    {% else %}
+                                        <span class="badge bg-secondary">Inativa</span>
+                                    {% endif %}
+                                </div>
+                                <p class="text-muted small mb-2">
+                                    <i class="bi bi-calendar"></i> {{ turma.ano_semestre }}
+                                </p>
+                                <p class="card-text text-muted small">
+                                    {{ turma.descricao|truncatewords:15 }}
+                                </p>
+                                <div class="d-flex justify-content-between align-items-center mt-3">
+                                    <div>
+                                        <span class="badge bg-info me-2">
+                                            <i class="bi bi-person"></i> {{ turma.num_estudantes }}
+                                        </span>
+                                        <span class="badge bg-secondary">
+                                            <i class="bi bi-diagram-3"></i> {{ turma.num_grupos }}
+                                        </span>
+                                    </div>
+                                    <div>
+                                        <span class="badge bg-light text-dark">
+                                            Código: <strong>{{ turma.codigo_acesso }}</strong>
+                                        </span>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="card-footer bg-transparent">
+                                <a href="{% url 'turma_detalhe' turma.pk %}" class="btn btn-sm btn-outline-primary">
+                                    <i class="bi bi-eye"></i> Ver Detalhes
+                                </a>
+                                <a href="{% url 'turma_editar' turma.pk %}" class="btn btn-sm btn-outline-secondary">
+                                    <i class="bi bi-pencil"></i> Editar
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                    {% endfor %}
+                </div>
+            {% else %}
+                <div class="text-center py-5">
+                    <i class="bi bi-inbox text-muted" style="font-size: 4rem;"></i>
+                    <p class="text-muted mt-3">Você ainda não criou nenhuma turma.</p>
+                    <a href="{% url 'turma_criar' %}" class="btn btn-primary">
+                        <i class="bi bi-plus"></i> Criar Primeira Turma
+                    </a>
+                </div>
+            {% endif %}
+        </div>
+    </div>
+</div>
+{% endblock %}
+

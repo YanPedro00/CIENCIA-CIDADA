@@ -1,0 +1,112 @@
+{% extends 'base.html' %}
+
+{% block title %}Avaliar Projeto - Ciência Cidadã{% endblock %}
+
+{% block content %}
+<div class="container">
+    <div class="row justify-content-center">
+        <div class="col-md-10">
+            <nav aria-label="breadcrumb">
+                <ol class="breadcrumb">
+                    <li class="breadcrumb-item"><a href="{% url 'dashboard' %}">Dashboard</a></li>
+                    <li class="breadcrumb-item"><a href="{% url 'projeto_detalhe' projeto.slug %}">{{ projeto.titulo }}</a></li>
+                    <li class="breadcrumb-item active">Avaliação</li>
+                </ol>
+            </nav>
+
+            <div class="card">
+                <div class="card-header bg-success text-white">
+                    <h4 class="mb-0"><i class="bi bi-star-fill"></i> {{ titulo }}</h4>
+                    <small>{{ projeto.titulo }} - {{ projeto.grupo.nome }}</small>
+                </div>
+                <div class="card-body">
+                    <form method="post">
+                        {% csrf_token %}
+                        
+                        <div class="row mb-4">
+                            <div class="col-md-6">
+                                <label for="id_conceito" class="form-label">Conceito Final *</label>
+                                <select name="conceito" class="form-select" id="id_conceito" required>
+                                    <option value="">Selecione...</option>
+                                    <option value="A">A - Excelente</option>
+                                    <option value="B">B - Bom</option>
+                                    <option value="C">C - Satisfatório</option>
+                                    <option value="D">D - Insuficiente</option>
+                                </select>
+                            </div>
+                        </div>
+
+                        <h5 class="mb-3">Notas por Fase (0 a 10)</h5>
+                        
+                        <div class="row">
+                            <div class="col-md-4 mb-3">
+                                <label for="id_nota_problema" class="form-label">1. Definição do Problema *</label>
+                                <input type="number" name="nota_problema" class="form-control" id="id_nota_problema" 
+                                       min="0" max="10" step="1" required>
+                            </div>
+                            <div class="col-md-4 mb-3">
+                                <label for="id_nota_hipotese" class="form-label">2. Hipótese *</label>
+                                <input type="number" name="nota_hipotese" class="form-control" id="id_nota_hipotese" 
+                                       min="0" max="10" step="1" required>
+                            </div>
+                            <div class="col-md-4 mb-3">
+                                <label for="id_nota_metodologia" class="form-label">3. Metodologia *</label>
+                                <input type="number" name="nota_metodologia" class="form-control" id="id_nota_metodologia" 
+                                       min="0" max="10" step="1" required>
+                            </div>
+                        </div>
+
+                        <div class="row">
+                            <div class="col-md-4 mb-3">
+                                <label for="id_nota_coleta" class="form-label">4. Coleta de Dados *</label>
+                                <input type="number" name="nota_coleta" class="form-control" id="id_nota_coleta" 
+                                       min="0" max="10" step="1" required>
+                            </div>
+                            <div class="col-md-4 mb-3">
+                                <label for="id_nota_analise" class="form-label">5. Análise *</label>
+                                <input type="number" name="nota_analise" class="form-control" id="id_nota_analise" 
+                                       min="0" max="10" step="1" required>
+                            </div>
+                            <div class="col-md-4 mb-3">
+                                <label for="id_nota_conclusao" class="form-label">6. Conclusão *</label>
+                                <input type="number" name="nota_conclusao" class="form-control" id="id_nota_conclusao" 
+                                       min="0" max="10" step="1" required>
+                            </div>
+                        </div>
+
+                        <hr class="my-4">
+
+                        <h5 class="mb-3">Feedback Qualitativo</h5>
+
+                        <div class="mb-3">
+                            <label for="id_comentarios" class="form-label">Comentários Gerais</label>
+                            <textarea name="comentarios" class="form-control" id="id_comentarios" rows="4"></textarea>
+                        </div>
+
+                        <div class="row">
+                            <div class="col-md-6 mb-3">
+                                <label for="id_pontos_fortes" class="form-label">Pontos Fortes</label>
+                                <textarea name="pontos_fortes" class="form-control" id="id_pontos_fortes" rows="3"></textarea>
+                            </div>
+                            <div class="col-md-6 mb-3">
+                                <label for="id_pontos_melhorar" class="form-label">Pontos a Melhorar</label>
+                                <textarea name="pontos_melhorar" class="form-control" id="id_pontos_melhorar" rows="3"></textarea>
+                            </div>
+                        </div>
+
+                        <div class="d-flex justify-content-between">
+                            <a href="{% url 'projeto_detalhe' projeto.slug %}" class="btn btn-secondary">
+                                <i class="bi bi-arrow-left"></i> Voltar
+                            </a>
+                            <button type="submit" class="btn btn-success btn-lg">
+                                <i class="bi bi-star-fill"></i> Salvar Avaliação
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+

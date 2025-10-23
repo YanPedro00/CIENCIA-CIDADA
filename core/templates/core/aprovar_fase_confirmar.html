@@ -1,0 +1,53 @@
+{% extends 'base.html' %}
+
+{% block title %}Aprovar Fase {{ fase }} - Ciência Cidadã{% endblock %}
+
+{% block content %}
+<div class="container">
+    <div class="row justify-content-center">
+        <div class="col-md-6">
+            <div class="card shadow">
+                <div class="card-header bg-success text-white">
+                    <h5 class="mb-0"><i class="bi bi-check-circle"></i> Aprovar Fase {{ fase }}</h5>
+                </div>
+                <div class="card-body">
+                    <h6>Projeto: {{ projeto.titulo }}</h6>
+                    <p class="text-muted">Grupo: {{ projeto.grupo.nome }}</p>
+                    
+                    <hr>
+                    
+                    <p><strong>Você está prestes a aprovar a Fase {{ fase }}:</strong></p>
+                    <p class="text-muted">{{ projeto.get_fase_atual_display }}</p>
+                    
+                    {% if fase == 6 %}
+                    <div class="alert alert-warning">
+                        <i class="bi bi-exclamation-triangle"></i>
+                        <strong>Atenção:</strong> Ao aprovar a Fase 6, o projeto será marcado como <strong>concluído</strong> 
+                        e você poderá então avaliar com nota conceitual.
+                    </div>
+                    {% else %}
+                    <div class="alert alert-info">
+                        <i class="bi bi-info-circle"></i>
+                        O grupo poderá avançar para a Fase {{ fase|add:"1" }} após a aprovação.
+                    </div>
+                    {% endif %}
+                    
+                    <form method="post">
+                        {% csrf_token %}
+                        
+                        <div class="d-flex justify-content-between">
+                            <a href="{% url 'projeto_detalhe' projeto.slug %}" class="btn btn-secondary">
+                                <i class="bi bi-x-circle"></i> Cancelar
+                            </a>
+                            <button type="submit" class="btn btn-success btn-lg">
+                                <i class="bi bi-check-circle-fill"></i> Confirmar Aprovação
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+

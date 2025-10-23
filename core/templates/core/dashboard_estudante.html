@@ -1,0 +1,191 @@
+{% extends 'base.html' %}
+
+{% block title %}Dashboard Estudante - Ciência Cidadã{% endblock %}
+
+{% block content %}
+<div class="container">
+    <div class="row mb-4">
+        <div class="col">
+            <h1 class="display-5">
+                <i class="bi bi-person-badge text-primary"></i> 
+                Meu Dashboard
+            </h1>
+            <p class="lead text-muted">Bem-vindo, {{ user.get_full_name|default:user.username }}!</p>
+        </div>
+        <div class="col-auto">
+            <a href="{% url 'turma_entrar' %}" class="btn btn-primary">
+                <i class="bi bi-box-arrow-in-right"></i> Entrar em Turma
+            </a>
+        </div>
+    </div>
+
+    <!-- Estatísticas -->
+    <div class="row mb-4">
+        <div class="col-md-4">
+            <div class="card bg-info text-white">
+                <div class="card-body">
+                    <h3 class="card-title">{{ turmas|length }}</h3>
+                    <p class="card-text">
+                        <i class="bi bi-people"></i> Turmas
+                    </p>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="card bg-warning text-white">
+                <div class="card-body">
+                    <h3 class="card-title">{{ grupos|length }}</h3>
+                    <p class="card-text">
+                        <i class="bi bi-diagram-3"></i> Grupos
+                    </p>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="card bg-success text-white">
+                <div class="card-body">
+                    <h3 class="card-title">{{ projetos|length }}</h3>
+                    <p class="card-text">
+                        <i class="bi bi-journal-text"></i> Projetos
+                    </p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Meus Projetos -->
+    {% if projetos %}
+    <div class="card mb-4">
+        <div class="card-header bg-primary text-white">
+            <h5 class="mb-0"><i class="bi bi-journal-text"></i> Meus Projetos</h5>
+        </div>
+        <div class="card-body">
+            <div class="row">
+                {% for projeto in projetos %}
+                <div class="col-md-6 mb-3">
+                    <div class="card h-100">
+                        <div class="card-body">
+                            <div class="d-flex justify-content-between">
+                                <h5 class="card-title">{{ projeto.titulo }}</h5>
+                                <span class="badge 
+                                    {% if projeto.status == 'concluido' %}bg-success
+                                    {% elif projeto.status == 'em_andamento' %}bg-primary
+                                    {% else %}bg-secondary{% endif %}">
+                                    {{ projeto.get_status_display }}
+                                </span>
+                            </div>
+                            <p class="text-muted small mb-2">
+                                <i class="bi bi-people"></i> {{ projeto.grupo.nome }}
+                            </p>
+                            <p class="card-text small">{{ projeto.descricao_breve|truncatewords:15 }}</p>
+                            
+                            <!-- Barra de Progresso -->
+                            <div class="mb-2">
+                                <div class="d-flex justify-content-between small mb-1">
+                                    <span>Progresso</span>
+                                    <span>{{ projeto.get_progresso_percentual|floatformat:0 }}%</span>
+                                </div>
+                                <div class="progress">
+                                    <div class="progress-bar bg-success" 
+                                         style="width: {{ projeto.get_progresso_percentual }}%">
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <div class="d-flex justify-content-between align-items-center">
+                                <span class="badge bg-light text-dark">
+                                    Fase {{ projeto.fase_atual }} de 6
+                                </span>
+                                <a href="{% url 'projeto_detalhe' projeto.slug %}" class="btn btn-sm btn-outline-primary">
+                                    Ver Projeto <i class="bi bi-arrow-right"></i>
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+        </div>
+    </div>
+    {% endif %}
+
+    <!-- Meus Grupos -->
+    {% if grupos %}
+    <div class="card mb-4">
+        <div class="card-header bg-warning text-white">
+            <h5 class="mb-0"><i class="bi bi-diagram-3"></i> Meus Grupos</h5>
+        </div>
+        <div class="list-group list-group-flush">
+            {% for grupo in grupos %}
+            <div class="list-group-item">
+                <div class="d-flex justify-content-between align-items-center">
+                    <div>
+                        <h6 class="mb-1">{{ grupo.nome }}</h6>
+                        <p class="mb-1 text-muted small">
+                            <i class="bi bi-people"></i> {{ grupo.turma.nome }}
+                        </p>
+                        <small class="text-muted">
+                            {{ grupo.total_membros }} membros
+                            {% if grupo.lider == user %}
+                                <span class="badge bg-warning text-dark">Você é o líder</span>
+                            {% endif %}
+                        </small>
+                    </div>
+                    <div>
+                        <a href="{% url 'grupo_detalhe' grupo.pk %}" class="btn btn-sm btn-outline-primary">
+                            Ver Grupo
+                        </a>
+                        {% if not grupo.projeto %}
+                            <a href="{% url 'projeto_criar' grupo.pk %}" class="btn btn-sm btn-success">
+                                <i class="bi bi-plus"></i> Criar Projeto
+                            </a>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+    {% endif %}
+
+    <!-- Minhas Turmas -->
+    {% if turmas %}
+    <div class="card">
+        <div class="card-header bg-info text-white">
+            <h5 class="mb-0"><i class="bi bi-people"></i> Minhas Turmas</h5>
+        </div>
+        <div class="list-group list-group-flush">
+            {% for item in turmas %}
+            <a href="{% url 'turma_detalhe' item.turma.pk %}" class="list-group-item list-group-item-action">
+                <div class="d-flex justify-content-between">
+                    <div>
+                        <h6 class="mb-1">{{ item.turma.nome }}</h6>
+                        <p class="mb-1 text-muted small">
+                            <i class="bi bi-person"></i> Prof. {{ item.turma.professor.get_full_name }}
+                        </p>
+                        <small class="text-muted">{{ item.turma.ano_semestre }}</small>
+                    </div>
+                    <div class="text-end">
+                        <span class="badge bg-light text-dark">
+                            Código: {{ item.turma.codigo_acesso }}
+                        </span>
+                    </div>
+                </div>
+            </a>
+            {% endfor %}
+        </div>
+    </div>
+    {% else %}
+        <div class="card">
+            <div class="card-body text-center py-5">
+                <i class="bi bi-inbox text-muted" style="font-size: 4rem;"></i>
+                <p class="text-muted mt-3 mb-3">Você ainda não está em nenhuma turma.</p>
+                <a href="{% url 'turma_entrar' %}" class="btn btn-primary">
+                    <i class="bi bi-box-arrow-in-right"></i> Entrar em uma Turma
+                </a>
+            </div>
+        </div>
+    {% endif %}
+</div>
+{% endblock %}
+
