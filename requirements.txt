@@ -9,7 +9,7 @@ dj-database-url==2.1.0
 
 # Formulários e validação
 django-crispy-forms==2.1
-crispy-bootstrap5==1.0.0
+crispy-bootstrap5==2024.2
 
 # Autenticação
 django-allauth==0.57.0
