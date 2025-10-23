@@ -127,8 +127,8 @@ python manage.py migrate
 python manage.py createsuperuser
 # Você vai ser perguntado:
 # - Username: admin (ou outro)
-# - Email: seu@email.com
-# - Password: ******** (digite duas vezes)
+# - Email: yanpdsf99@gmail.com
+# - Password: 123456 (digite duas vezes)
 
 # Coletar arquivos estáticos
 python manage.py collectstatic --noinput
@@ -198,7 +198,7 @@ Volte à página do Web App e role até **Static files**:
 
 4. Adicione mais um:
    - URL: `/media/`
-   - Path: `/home/SEUUSUARIO/ciencia-cidada/media`
+   - Path: `/home/yanpedro/ciencia-cidada/media`
 
 ### 6.5 Configurar Settings Django
 

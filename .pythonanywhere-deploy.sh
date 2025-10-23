@@ -19,6 +19,6 @@ echo "5. Coletar arquivos estáticos:"
 echo "python manage.py collectstatic --noinput"
 echo ""
 echo "=== Configuração WSGI ==="
-echo "Caminho do projeto: /home/SEUUSUARIO/ciencia-cidada"
-echo "Caminho do virtualenv: /home/SEUUSUARIO/.virtualenvs/ciencia_cidada"
+echo "Caminho do projeto: /home/yanpedro@WPA10PE09SRVWD/ciencia-cidada"
+echo "Caminho do virtualenv: /home/yanpedro@WPA10PE09SRVWD/.virtualenvs/ciencia_cidada"
 

@@ -29,6 +29,13 @@ DEBUG = config('DEBUG', default=True, cast=bool)
 
 ALLOWED_HOSTS = config('ALLOWED_HOSTS', default='localhost,127.0.0.1', cast=Csv())
 
+# Railway.app specific
+RAILWAY_STATIC_URL = config('RAILWAY_STATIC_URL', default='')
+RAILWAY_GIT_COMMIT_SHA = config('RAILWAY_GIT_COMMIT_SHA', default='')
+if RAILWAY_GIT_COMMIT_SHA:
+    # Running on Railway
+    ALLOWED_HOSTS += ['.railway.app', '.up.railway.app']
+
 
 # Application definition
 
@@ -46,6 +53,7 @@ INSTALLED_APPS = [
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
+    'whitenoise.middleware.WhiteNoiseMiddleware',  # WhiteNoise para Railway
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
@@ -79,25 +87,24 @@ WSGI_APPLICATION = 'config.wsgi.application'
 # Database
 # https://docs.djangoproject.com/en/4.2/ref/settings/#databases
 
-# Usando SQLite para desenvolvimento (pode trocar para PostgreSQL em produção)
-DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': BASE_DIR / 'db.sqlite3',
-    }
-}
+# Railway fornece DATABASE_URL automaticamente
+import dj_database_url
 
-# Para usar PostgreSQL, descomente e configure:
-# DATABASES = {
-#     'default': {
-#         'ENGINE': config('DB_ENGINE', default='django.db.backends.postgresql'),
-#         'NAME': config('DB_NAME', default='ciencia_cidada'),
-#         'USER': config('DB_USER', default='postgres'),
-#         'PASSWORD': config('DB_PASSWORD', default='postgres'),
-#         'HOST': config('DB_HOST', default='localhost'),
-#         'PORT': config('DB_PORT', default='5432'),
-#     }
-# }
+DATABASE_URL = config('DATABASE_URL', default=None)
+
+if DATABASE_URL:
+    # Produção (Railway)
+    DATABASES = {
+        'default': dj_database_url.config(default=DATABASE_URL, conn_max_age=600)
+    }
+else:
+    # Desenvolvimento local (SQLite)
+    DATABASES = {
+        'default': {
+            'ENGINE': 'django.db.backends.sqlite3',
+            'NAME': BASE_DIR / 'db.sqlite3',
+        }
+    }
 
 
 # Password validation
@@ -174,3 +181,6 @@ EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
 # SECURE_SSL_REDIRECT = True
 # SESSION_COOKIE_SECURE = True
 # CSRF_COOKIE_SECURE = True
+
+# WhiteNoise configuration (Railway)
+STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'

@@ -5,6 +5,7 @@ Pillow==10.1.0
 
 # Banco de dados
 psycopg2-binary==2.9.9
+dj-database-url==2.1.0
 
 # Formulários e validação
 django-crispy-forms==2.1
