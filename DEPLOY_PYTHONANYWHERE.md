@@ -214,7 +214,7 @@ nano config/settings.py
 Encontre a linha `ALLOWED_HOSTS = [...]` e altere para:
 
 ```python
-ALLOWED_HOSTS = ['SEUUSUARIO.pythonanywhere.com', 'localhost', '127.0.0.1']
+ALLOWED_HOSTS = ['yanpedro.pythonanywhere.com', 'localhost', '127.0.0.1']
 ```
 
 Pressione `Ctrl+O` para salvar, `Enter`, depois `Ctrl+X` para sair.
