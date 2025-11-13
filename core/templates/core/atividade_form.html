@@ -1,0 +1,59 @@
+{% extends 'base.html' %}
+{% load crispy_forms_tags %}
+
+{% block title %}{{ titulo }} - Ciência Cidadã{% endblock %}
+
+{% block content %}
+<div class="container">
+    <nav aria-label="breadcrumb">
+        <ol class="breadcrumb">
+            <li class="breadcrumb-item"><a href="{% url 'dashboard' %}">Dashboard</a></li>
+            <li class="breadcrumb-item"><a href="{% url 'turma_detalhe' turma.pk %}">{{ turma.nome }}</a></li>
+            <li class="breadcrumb-item"><a href="{% url 'turma_atividades' turma.pk %}">Atividades</a></li>
+            <li class="breadcrumb-item active">{{ titulo }}</li>
+        </ol>
+    </nav>
+
+    <div class="row justify-content-center">
+        <div class="col-lg-8">
+            <div class="card shadow">
+                <div class="card-header bg-success text-white">
+                    <h4 class="mb-0">
+                        <i class="bi bi-clipboard-check"></i> {{ titulo }}
+                    </h4>
+                </div>
+                <div class="card-body">
+                    <p class="text-muted">
+                        <strong>Turma:</strong> {{ turma.nome }} ({{ turma.ano_semestre }})
+                    </p>
+                    
+                    <form method="post" enctype="multipart/form-data">
+                        {% csrf_token %}
+                        {{ form|crispy }}
+                        
+                        <div class="d-flex gap-2 mt-4">
+                            <button type="submit" class="btn btn-success">
+                                <i class="bi bi-check-circle"></i> Salvar
+                            </button>
+                            <a href="{% url 'turma_atividades' turma.pk %}" class="btn btn-secondary">
+                                <i class="bi bi-x-circle"></i> Cancelar
+                            </a>
+                        </div>
+                    </form>
+                </div>
+            </div>
+            
+            <div class="alert alert-info mt-3">
+                <strong><i class="bi bi-info-circle"></i> Dica:</strong>
+                <ul class="mb-0 mt-2">
+                    <li><strong>Informação:</strong> Para avisos gerais e comunicados</li>
+                    <li><strong>Tarefa:</strong> Para atividades que os alunos devem realizar</li>
+                    <li><strong>Material:</strong> Para compartilhar recursos educacionais</li>
+                    <li><strong>Aviso:</strong> Para comunicados importantes e urgentes</li>
+                </ul>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+

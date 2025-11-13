@@ -1,0 +1,124 @@
+{% extends 'base.html' %}
+
+{% block title %}{{ atividade.titulo }} - Ciência Cidadã{% endblock %}
+
+{% block content %}
+<div class="container">
+    <nav aria-label="breadcrumb">
+        <ol class="breadcrumb">
+            <li class="breadcrumb-item"><a href="{% url 'dashboard' %}">Dashboard</a></li>
+            <li class="breadcrumb-item"><a href="{% url 'turma_detalhe' turma.pk %}">{{ turma.nome }}</a></li>
+            <li class="breadcrumb-item"><a href="{% url 'turma_atividades' turma.pk %}">Atividades</a></li>
+            <li class="breadcrumb-item active">{{ atividade.titulo }}</li>
+        </ol>
+    </nav>
+
+    <div class="row justify-content-center">
+        <div class="col-lg-10">
+            {% if atividade.fixado %}
+            <div class="alert alert-warning border-warning">
+                <i class="bi bi-pin-angle-fill"></i> <strong>Atividade Fixada</strong>
+            </div>
+            {% endif %}
+            
+            <div class="card shadow-sm">
+                <div class="card-header {% if atividade.tipo == 'aviso' %}bg-danger text-white{% elif atividade.tipo == 'tarefa' %}bg-primary text-white{% elif atividade.tipo == 'material' %}bg-success text-white{% else %}bg-info text-white{% endif %}">
+                    <div class="d-flex justify-content-between align-items-center">
+                        <h3 class="mb-0">
+                            {% if atividade.tipo == 'tarefa' %}
+                                <i class="bi bi-pencil-square"></i>
+                            {% elif atividade.tipo == 'aviso' %}
+                                <i class="bi bi-exclamation-circle"></i>
+                            {% elif atividade.tipo == 'material' %}
+                                <i class="bi bi-book"></i>
+                            {% else %}
+                                <i class="bi bi-info-circle"></i>
+                            {% endif %}
+                            {{ atividade.titulo }}
+                        </h3>
+                        {% if user.tipo == 'professor' %}
+                        <div>
+                            <a href="{% url 'atividade_editar' atividade.pk %}" class="btn btn-light btn-sm">
+                                <i class="bi bi-pencil"></i> Editar
+                            </a>
+                            <a href="{% url 'atividade_excluir' atividade.pk %}" class="btn btn-outline-light btn-sm">
+                                <i class="bi bi-trash"></i>
+                            </a>
+                        </div>
+                        {% endif %}
+                    </div>
+                </div>
+                
+                <div class="card-body">
+                    <div class="mb-3">
+                        {% if atividade.tipo == 'tarefa' %}
+                            <span class="badge bg-primary">Tarefa</span>
+                        {% elif atividade.tipo == 'aviso' %}
+                            <span class="badge bg-danger">Aviso</span>
+                        {% elif atividade.tipo == 'material' %}
+                            <span class="badge bg-success">Material de Apoio</span>
+                        {% else %}
+                            <span class="badge bg-info">Informação</span>
+                        {% endif %}
+                        
+                        {% if not atividade.ativo and user.tipo == 'professor' %}
+                            <span class="badge bg-secondary">
+                                <i class="bi bi-eye-slash"></i> Inativo (não visível para alunos)
+                            </span>
+                        {% endif %}
+                    </div>
+                    
+                    <div class="mb-4">
+                        <h5>Descrição:</h5>
+                        <p class="lead" style="white-space: pre-line;">{{ atividade.descricao }}</p>
+                    </div>
+                    
+                    {% if atividade.data_entrega %}
+                    <div class="alert alert-warning">
+                        <i class="bi bi-calendar-event"></i> <strong>Data de Entrega:</strong> {{ atividade.data_entrega|date:"d/m/Y" }}
+                    </div>
+                    {% endif %}
+                    
+                    {% if atividade.arquivo %}
+                    <div class="alert alert-info">
+                        <i class="bi bi-paperclip"></i> <strong>Arquivo Anexo:</strong>
+                        <a href="{{ atividade.arquivo.url }}" class="btn btn-sm btn-primary ms-2" download>
+                            <i class="bi bi-download"></i> Baixar Arquivo
+                        </a>
+                    </div>
+                    {% endif %}
+                    
+                    <hr>
+                    
+                    <div class="row">
+                        <div class="col-md-6">
+                            <p class="text-muted mb-1">
+                                <strong><i class="bi bi-person"></i> Professor:</strong><br>
+                                {{ atividade.autor.get_full_name }}
+                            </p>
+                        </div>
+                        <div class="col-md-6">
+                            <p class="text-muted mb-1">
+                                <strong><i class="bi bi-clock"></i> Publicado em:</strong><br>
+                                {{ atividade.criado_em|date:"d/m/Y \à\s H:i" }}
+                            </p>
+                            {% if atividade.atualizado_em != atividade.criado_em %}
+                            <p class="text-muted mb-0">
+                                <small><i class="bi bi-pencil"></i> Última atualização: {{ atividade.atualizado_em|date:"d/m/Y H:i" }}</small>
+                            </p>
+                            {% endif %}
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="card-footer bg-light">
+                    <a href="{% url 'turma_atividades' turma.pk %}" class="btn btn-secondary">
+                        <i class="bi bi-arrow-left"></i> Voltar para Atividades
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+

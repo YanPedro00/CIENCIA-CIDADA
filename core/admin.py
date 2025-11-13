@@ -3,7 +3,7 @@ from django.contrib.auth.admin import UserAdmin as BaseUserAdmin
 from django.utils.html import format_html
 from .models import (
     Usuario, Turma, Grupo, Projeto, Observacao, 
-    Feedback, Avaliacao, EstudanteTurma
+    Feedback, Avaliacao, EstudanteTurma, Atividade
 )
 
 
@@ -282,3 +282,29 @@ class EstudanteTurmaAdmin(admin.ModelAdmin):
     def estudante_nome(self, obj):
         return obj.estudante.get_full_name() or obj.estudante.username
     estudante_nome.short_description = 'Estudante'
+
+
+@admin.register(Atividade)
+class AtividadeAdmin(admin.ModelAdmin):
+    """Admin para Atividade"""
+    list_display = ['titulo', 'turma', 'tipo', 'autor', 'fixado', 'ativo', 'data_entrega', 'criado_em']
+    list_filter = ['tipo', 'fixado', 'ativo', 'turma', 'criado_em']
+    search_fields = ['titulo', 'descricao', 'turma__nome', 'autor__username']
+    readonly_fields = ['criado_em', 'atualizado_em']
+    
+    fieldsets = (
+        ('Informações Básicas', {
+            'fields': ('turma', 'autor', 'titulo', 'descricao', 'tipo')
+        }),
+        ('Anexo', {
+            'fields': ('arquivo',),
+            'classes': ('collapse',)
+        }),
+        ('Data e Controle', {
+            'fields': ('data_entrega', 'fixado', 'ativo')
+        }),
+        ('Metadados', {
+            'fields': ('criado_em', 'atualizado_em'),
+            'classes': ('collapse',)
+        }),
+    )

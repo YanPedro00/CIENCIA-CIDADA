@@ -2,7 +2,7 @@ from django import forms
 from django.contrib.auth.forms import UserCreationForm
 from .models import (
     Usuario, Turma, Grupo, Projeto, Observacao,
-    Feedback, Avaliacao
+    Feedback, Avaliacao, Atividade
 )
 
 
@@ -282,5 +282,44 @@ class AvaliacaoForm(forms.ModelForm):
             'comentarios': 'Comentários Gerais',
             'pontos_fortes': 'Pontos Fortes do Projeto',
             'pontos_melhorar': 'Pontos a Melhorar',
+        }
+
+
+class AtividadeForm(forms.ModelForm):
+    """Formulário para criar/editar atividade da turma"""
+    class Meta:
+        model = Atividade
+        fields = [
+            'titulo',
+            'tipo',
+            'descricao',
+            'data_entrega',
+            'arquivo',
+            'fixado',
+            'ativo'
+        ]
+        widgets = {
+            'descricao': forms.Textarea(attrs={
+                'rows': 6,
+                'placeholder': 'Descreva a atividade, tarefa ou informação...'
+            }),
+            'data_entrega': forms.DateInput(attrs={
+                'type': 'date',
+                'class': 'form-control'
+            }),
+        }
+        labels = {
+            'titulo': 'Título',
+            'tipo': 'Tipo de Atividade',
+            'descricao': 'Descrição',
+            'data_entrega': 'Data de Entrega (opcional)',
+            'arquivo': 'Arquivo Anexo (opcional)',
+            'fixado': 'Fixar no Topo',
+            'ativo': 'Ativo (visível para os alunos)',
+        }
+        help_texts = {
+            'data_entrega': 'Opcional - apenas para tarefas com prazo',
+            'arquivo': 'PDF, imagem, documento, etc.',
+            'fixado': 'Atividades fixadas aparecem no topo da lista',
         }
 

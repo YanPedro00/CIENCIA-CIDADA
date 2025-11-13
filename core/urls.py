@@ -47,5 +47,12 @@ urlpatterns = [
     
     # Professor - Avaliação
     path('projetos/<slug:slug>/avaliar/', views.projeto_avaliar, name='projeto_avaliar'),
+    
+    # Atividades da Turma
+    path('turmas/<int:pk>/atividades/', views.turma_atividades, name='turma_atividades'),
+    path('turmas/<int:turma_pk>/atividades/criar/', views.atividade_criar, name='atividade_criar'),
+    path('atividades/<int:pk>/', views.atividade_detalhe, name='atividade_detalhe'),
+    path('atividades/<int:pk>/editar/', views.atividade_editar, name='atividade_editar'),
+    path('atividades/<int:pk>/excluir/', views.atividade_excluir, name='atividade_excluir'),
 ]
 

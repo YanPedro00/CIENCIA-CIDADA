@@ -676,3 +676,74 @@ class EstudanteTurma(models.Model):
     
     def __str__(self):
         return f"{self.estudante.get_full_name()} - {self.turma.nome}"
+
+
+class Atividade(models.Model):
+    """
+    Atividades e informações postadas pelo professor para uma turma específica.
+    Professores podem criar, editar e excluir. Estudantes podem apenas visualizar.
+    """
+    turma = models.ForeignKey(
+        Turma,
+        on_delete=models.CASCADE,
+        related_name='atividades',
+        verbose_name='Turma'
+    )
+    autor = models.ForeignKey(
+        Usuario,
+        on_delete=models.CASCADE,
+        related_name='atividades_criadas',
+        limit_choices_to={'tipo': 'professor'},
+        verbose_name='Professor'
+    )
+    titulo = models.CharField(max_length=300, verbose_name='Título')
+    descricao = models.TextField(verbose_name='Descrição')
+    
+    # Tipo de atividade
+    TIPO_ATIVIDADE = (
+        ('informacao', 'Informação'),
+        ('tarefa', 'Tarefa'),
+        ('material', 'Material de Apoio'),
+        ('aviso', 'Aviso'),
+    )
+    tipo = models.CharField(
+        max_length=20,
+        choices=TIPO_ATIVIDADE,
+        default='informacao',
+        verbose_name='Tipo'
+    )
+    
+    # Datas importantes
+    data_entrega = models.DateField(
+        blank=True,
+        null=True,
+        verbose_name='Data de Entrega',
+        help_text='Opcional - para tarefas com prazo'
+    )
+    
+    # Arquivos anexos (opcional)
+    arquivo = models.FileField(
+        upload_to='atividades/',
+        blank=True,
+        null=True,
+        verbose_name='Arquivo Anexo'
+    )
+    
+    # Controle
+    fixado = models.BooleanField(
+        default=False,
+        verbose_name='Fixar no Topo',
+        help_text='Atividades fixadas aparecem primeiro'
+    )
+    ativo = models.BooleanField(default=True, verbose_name='Ativo')
+    
+    criado_em = models.DateTimeField(auto_now_add=True, verbose_name='Criado em')
+    atualizado_em = models.DateTimeField(auto_now=True, verbose_name='Atualizado em')
+    
+    class Meta:
+        verbose_name = 'Atividade'
+        verbose_name_plural = 'Atividades'
+        ordering = ['-fixado', '-criado_em']
+    
+    def __str__(self):
+        return f"{self.titulo} - {self.turma.nome}"

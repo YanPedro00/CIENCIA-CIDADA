@@ -6,13 +6,13 @@ from django.utils import timezone
 from django.db.models import Q, Count
 from .models import (
     Usuario, Turma, Grupo, Projeto, Observacao, 
-    Feedback, Avaliacao, EstudanteTurma
+    Feedback, Avaliacao, EstudanteTurma, Atividade
 )
 from .forms import (
     RegistroForm, LoginForm, TurmaForm, GrupoForm,
     ProjetoForm, ObservacaoForm, FeedbackForm, AvaliacaoForm,
     EntrarTurmaForm, Fase1Form, Fase2Form, Fase3Form,
-    Fase5Form, Fase6Form
+    Fase5Form, Fase6Form, AtividadeForm
 )
 
 
@@ -738,3 +738,143 @@ def projeto_avaliar(request, slug):
         'titulo': 'Avaliar Projeto'
     }
     return render(request, 'core/avaliacao_form.html', context)
+
+
+# ============== Atividades da Turma ==============
+
+@login_required
+def turma_atividades(request, pk):
+    """Lista de atividades de uma turma"""
+    turma = get_object_or_404(Turma, pk=pk)
+    
+    # Verificar permissão
+    if request.user.is_professor():
+        if turma.professor != request.user:
+            messages.error(request, 'Você não tem permissão para acessar esta turma.')
+            return redirect('dashboard')
+    else:
+        # Verificar se o estudante está na turma
+        if not EstudanteTurma.objects.filter(turma=turma, estudante=request.user).exists():
+            messages.error(request, 'Você não está inscrito nesta turma.')
+            return redirect('dashboard')
+    
+    # Listar atividades ativas (estudantes veem apenas ativas)
+    if request.user.is_estudante():
+        atividades = turma.atividades.filter(ativo=True).order_by('-fixado', '-criado_em')
+    else:
+        atividades = turma.atividades.all().order_by('-fixado', '-criado_em')
+    
+    context = {
+        'turma': turma,
+        'atividades': atividades,
+    }
+    return render(request, 'core/turma_atividades.html', context)
+
+
+@login_required
+@user_passes_test(is_professor)
+def atividade_criar(request, turma_pk):
+    """Professor cria atividade para turma"""
+    turma = get_object_or_404(Turma, pk=turma_pk, professor=request.user)
+    
+    if request.method == 'POST':
+        form = AtividadeForm(request.POST, request.FILES)
+        if form.is_valid():
+            atividade = form.save(commit=False)
+            atividade.turma = turma
+            atividade.autor = request.user
+            atividade.save()
+            messages.success(request, f'Atividade "{atividade.titulo}" criada com sucesso!')
+            return redirect('turma_atividades', pk=turma.pk)
+    else:
+        form = AtividadeForm()
+    
+    context = {
+        'form': form,
+        'turma': turma,
+        'titulo': 'Criar Atividade',
+    }
+    return render(request, 'core/atividade_form.html', context)
+
+
+@login_required
+def atividade_detalhe(request, pk):
+    """Visualizar detalhes de uma atividade"""
+    atividade = get_object_or_404(Atividade, pk=pk)
+    turma = atividade.turma
+    
+    # Verificar permissão
+    if request.user.is_professor():
+        if turma.professor != request.user:
+            messages.error(request, 'Você não tem permissão para acessar esta atividade.')
+            return redirect('dashboard')
+    else:
+        # Verificar se o estudante está na turma
+        if not EstudanteTurma.objects.filter(turma=turma, estudante=request.user).exists():
+            messages.error(request, 'Você não está inscrito nesta turma.')
+            return redirect('dashboard')
+        # Estudantes só veem atividades ativas
+        if not atividade.ativo:
+            messages.error(request, 'Esta atividade não está disponível.')
+            return redirect('dashboard')
+    
+    context = {
+        'atividade': atividade,
+        'turma': turma,
+    }
+    return render(request, 'core/atividade_detalhe.html', context)
+
+
+@login_required
+@user_passes_test(is_professor)
+def atividade_editar(request, pk):
+    """Professor edita atividade"""
+    atividade = get_object_or_404(Atividade, pk=pk)
+    turma = atividade.turma
+    
+    # Verificar se é o professor da turma
+    if turma.professor != request.user:
+        messages.error(request, 'Você não tem permissão para editar esta atividade.')
+        return redirect('dashboard')
+    
+    if request.method == 'POST':
+        form = AtividadeForm(request.POST, request.FILES, instance=atividade)
+        if form.is_valid():
+            form.save()
+            messages.success(request, 'Atividade atualizada com sucesso!')
+            return redirect('atividade_detalhe', pk=atividade.pk)
+    else:
+        form = AtividadeForm(instance=atividade)
+    
+    context = {
+        'form': form,
+        'atividade': atividade,
+        'turma': turma,
+        'titulo': 'Editar Atividade',
+    }
+    return render(request, 'core/atividade_form.html', context)
+
+
+@login_required
+@user_passes_test(is_professor)
+def atividade_excluir(request, pk):
+    """Professor exclui atividade"""
+    atividade = get_object_or_404(Atividade, pk=pk)
+    turma = atividade.turma
+    
+    # Verificar se é o professor da turma
+    if turma.professor != request.user:
+        messages.error(request, 'Você não tem permissão para excluir esta atividade.')
+        return redirect('dashboard')
+    
+    turma_pk = turma.pk
+    if request.method == 'POST':
+        atividade.delete()
+        messages.success(request, 'Atividade excluída com sucesso.')
+        return redirect('turma_atividades', pk=turma_pk)
+    
+    context = {
+        'atividade': atividade,
+        'turma': turma,
+    }
+    return render(request, 'core/atividade_confirmar_exclusao.html', context)

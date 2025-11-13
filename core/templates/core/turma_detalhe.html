@@ -28,11 +28,20 @@
         </div>
         {% if user == turma.professor %}
         <div class="col-auto">
+            <a href="{% url 'turma_atividades' turma.pk %}" class="btn btn-info">
+                <i class="bi bi-clipboard-check"></i> Atividades
+            </a>
             <a href="{% url 'turma_editar' turma.pk %}" class="btn btn-primary">
                 <i class="bi bi-pencil"></i> Editar
             </a>
             <a href="{% url 'grupo_criar' turma.pk %}" class="btn btn-success">
                 <i class="bi bi-plus"></i> Criar Grupo
+            </a>
+        </div>
+        {% else %}
+        <div class="col-auto">
+            <a href="{% url 'turma_atividades' turma.pk %}" class="btn btn-info">
+                <i class="bi bi-clipboard-check"></i> Ver Atividades
             </a>
         </div>
         {% endif %}

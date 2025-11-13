@@ -1,0 +1,123 @@
+{% extends 'base.html' %}
+
+{% block title %}Atividades - {{ turma.nome }} - Ciência Cidadã{% endblock %}
+
+{% block content %}
+<div class="container">
+    <nav aria-label="breadcrumb">
+        <ol class="breadcrumb">
+            <li class="breadcrumb-item"><a href="{% url 'dashboard' %}">Dashboard</a></li>
+            <li class="breadcrumb-item"><a href="{% url 'turma_detalhe' turma.pk %}">{{ turma.nome }}</a></li>
+            <li class="breadcrumb-item active">Atividades</li>
+        </ol>
+    </nav>
+
+    <div class="row mb-4">
+        <div class="col">
+            <h1 class="display-5"><i class="bi bi-clipboard-check"></i> Atividades</h1>
+            <p class="lead text-muted">{{ turma.nome }} - {{ turma.ano_semestre }}</p>
+        </div>
+        {% if user.tipo == 'professor' %}
+        <div class="col-auto">
+            <a href="{% url 'atividade_criar' turma.pk %}" class="btn btn-success">
+                <i class="bi bi-plus-circle"></i> Nova Atividade
+            </a>
+        </div>
+        {% endif %}
+    </div>
+
+    {% if atividades %}
+        <div class="row">
+            {% for atividade in atividades %}
+            <div class="col-md-12 mb-3">
+                <div class="card {% if atividade.fixado %}border-warning{% endif %}">
+                    {% if atividade.fixado %}
+                    <div class="card-header bg-warning text-white py-1">
+                        <small><i class="bi bi-pin-angle-fill"></i> FIXADO</small>
+                    </div>
+                    {% endif %}
+                    <div class="card-body">
+                        <div class="d-flex justify-content-between align-items-start">
+                            <div class="flex-grow-1">
+                                <h5 class="card-title mb-2">
+                                    <a href="{% url 'atividade_detalhe' atividade.pk %}" class="text-decoration-none">
+                                        {{ atividade.titulo }}
+                                    </a>
+                                </h5>
+                                
+                                <div class="mb-2">
+                                    {% if atividade.tipo == 'tarefa' %}
+                                        <span class="badge bg-primary"><i class="bi bi-pencil-square"></i> Tarefa</span>
+                                    {% elif atividade.tipo == 'aviso' %}
+                                        <span class="badge bg-danger"><i class="bi bi-exclamation-circle"></i> Aviso</span>
+                                    {% elif atividade.tipo == 'material' %}
+                                        <span class="badge bg-success"><i class="bi bi-book"></i> Material</span>
+                                    {% else %}
+                                        <span class="badge bg-info"><i class="bi bi-info-circle"></i> Informação</span>
+                                    {% endif %}
+                                    
+                                    {% if atividade.data_entrega %}
+                                        <span class="badge bg-secondary">
+                                            <i class="bi bi-calendar-event"></i> Entrega: {{ atividade.data_entrega|date:"d/m/Y" }}
+                                        </span>
+                                    {% endif %}
+                                    
+                                    {% if atividade.arquivo %}
+                                        <span class="badge bg-dark">
+                                            <i class="bi bi-paperclip"></i> Anexo
+                                        </span>
+                                    {% endif %}
+                                    
+                                    {% if user.tipo == 'professor' and not atividade.ativo %}
+                                        <span class="badge bg-secondary">
+                                            <i class="bi bi-eye-slash"></i> Inativo
+                                        </span>
+                                    {% endif %}
+                                </div>
+                                
+                                <p class="card-text text-muted mb-2">
+                                    {{ atividade.descricao|truncatewords:30 }}
+                                </p>
+                                
+                                <small class="text-muted">
+                                    <i class="bi bi-person"></i> {{ atividade.autor.get_full_name }} • 
+                                    <i class="bi bi-clock"></i> {{ atividade.criado_em|date:"d/m/Y H:i" }}
+                                </small>
+                            </div>
+                            
+                            <div class="ms-3">
+                                <a href="{% url 'atividade_detalhe' atividade.pk %}" class="btn btn-sm btn-outline-primary">
+                                    <i class="bi bi-eye"></i> Ver
+                                </a>
+                                {% if user.tipo == 'professor' %}
+                                <a href="{% url 'atividade_editar' atividade.pk %}" class="btn btn-sm btn-outline-secondary">
+                                    <i class="bi bi-pencil"></i>
+                                </a>
+                                <a href="{% url 'atividade_excluir' atividade.pk %}" class="btn btn-sm btn-outline-danger">
+                                    <i class="bi bi-trash"></i>
+                                </a>
+                                {% endif %}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+    {% else %}
+        <div class="alert alert-info text-center">
+            <i class="bi bi-inbox" style="font-size: 3rem;"></i>
+            <h4 class="mt-3">Nenhuma atividade postada ainda</h4>
+            {% if user.tipo == 'professor' %}
+                <p class="text-muted">Crie a primeira atividade para sua turma!</p>
+                <a href="{% url 'atividade_criar' turma.pk %}" class="btn btn-success">
+                    <i class="bi bi-plus-circle"></i> Criar Atividade
+                </a>
+            {% else %}
+                <p class="text-muted">O professor ainda não postou atividades.</p>
+            {% endif %}
+        </div>
+    {% endif %}
+</div>
+{% endblock %}
+
