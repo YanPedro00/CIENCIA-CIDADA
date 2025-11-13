@@ -1,30 +1,31 @@
-# 🧪 Guia de Testes de Usabilidade - Plataforma Ciência Cidadã
+# GUIA DE TESTES DE USABILIDADE - PLATAFORMA CIÊNCIA CIDADÃ
 
-## 📋 Objetivo dos Testes
+## OBJETIVO DOS TESTES
 
 Este documento serve como guia para realizar testes de usabilidade na plataforma Ciência Cidadã. O objetivo é avaliar a facilidade de uso, clareza da interface e eficiência dos fluxos de trabalho tanto para professores quanto para estudantes.
 
 ---
 
-## 👥 Perfis de Teste
+## PERFIS DE TESTE
 
 ### Professor
-- **Username:** `prof_teste`
-- **Senha:** `prof123456`
+- **Username:** prof_teste
+- **Senha:** prof123456
 
 ### Estudante 1
-- **Username:** `aluno1`
-- **Senha:** `aluno123456`
+- **Username:** aluno1
+- **Senha:** aluno123456
 
 ### Estudante 2
-- **Username:** `aluno2`
-- **Senha:** `aluno123456`
+- **Username:** aluno2
+- **Senha:** aluno123456
 
 ---
 
-## ✅ CENÁRIO 1: Fluxo Completo do Professor
+## CENÁRIO 1: FLUXO COMPLETO DO PROFESSOR
 
 ### 1.1 Autenticação e Dashboard
+
 **Objetivo:** Verificar facilidade de acesso e clareza do dashboard
 
 **Passos:**
@@ -46,6 +47,7 @@ Este documento serve como guia para realizar testes de usabilidade na plataforma
 ---
 
 ### 1.2 Criar Turma
+
 **Objetivo:** Avaliar o processo de criação de turma
 
 **Passos:**
@@ -74,6 +76,7 @@ Este documento serve como guia para realizar testes de usabilidade na plataforma
 ---
 
 ### 1.3 Criar Atividade para Turma
+
 **Objetivo:** Testar a funcionalidade de postar atividades/avisos
 
 **Passos:**
@@ -84,7 +87,7 @@ Este documento serve como guia para realizar testes de usabilidade na plataforma
    - Título: "Bem-vindos à disciplina!"
    - Tipo: Aviso
    - Descrição: "Olá turma! Sejam bem-vindos. Nossa primeira tarefa será definir o problema de pesquisa."
-   - Fixar no topo: ✓
+   - Fixar no topo: Sim
 5. Salve a atividade
 6. Crie outra atividade do tipo "Tarefa":
    - Título: "Definir tema do projeto"
@@ -108,6 +111,7 @@ Este documento serve como guia para realizar testes de usabilidade na plataforma
 ---
 
 ### 1.4 Criar Grupo
+
 **Objetivo:** Avaliar criação de grupos na turma
 
 **Passos:**
@@ -127,6 +131,7 @@ Este documento serve como guia para realizar testes de usabilidade na plataforma
 ---
 
 ### 1.5 Avaliar Projeto (Fases)
+
 **Objetivo:** Testar aprovação de fases do método científico
 
 **Passos:**
@@ -153,6 +158,7 @@ Este documento serve como guia para realizar testes de usabilidade na plataforma
 ---
 
 ### 1.6 Avaliar Projeto Final
+
 **Objetivo:** Testar avaliação conceitual final
 
 **Passos:**
@@ -174,9 +180,10 @@ Este documento serve como guia para realizar testes de usabilidade na plataforma
 
 ---
 
-## ✅ CENÁRIO 2: Fluxo Completo do Estudante
+## CENÁRIO 2: FLUXO COMPLETO DO ESTUDANTE
 
 ### 2.1 Autenticação e Dashboard
+
 **Objetivo:** Verificar experiência inicial do estudante
 
 **Passos:**
@@ -192,6 +199,7 @@ Este documento serve como guia para realizar testes de usabilidade na plataforma
 ---
 
 ### 2.2 Entrar em Turma
+
 **Objetivo:** Testar o processo de inscrição em turma
 
 **Passos:**
@@ -213,6 +221,7 @@ Este documento serve como guia para realizar testes de usabilidade na plataforma
 ---
 
 ### 2.3 Visualizar Atividades da Turma
+
 **Objetivo:** Testar visualização de atividades postadas pelo professor
 
 **Passos:**
@@ -238,6 +247,7 @@ Este documento serve como guia para realizar testes de usabilidade na plataforma
 ---
 
 ### 2.4 Entrar em Grupo
+
 **Objetivo:** Avaliar o processo de juntar-se a um grupo
 
 **Passos:**
@@ -259,6 +269,7 @@ Este documento serve como guia para realizar testes de usabilidade na plataforma
 ---
 
 ### 2.5 Criar Projeto
+
 **Objetivo:** Testar criação de projeto científico
 
 **Passos:**
@@ -278,6 +289,7 @@ Este documento serve como guia para realizar testes de usabilidade na plataforma
 ---
 
 ### 2.6 Preencher Fase 1 (Problema de Pesquisa)
+
 **Objetivo:** Testar preenchimento da primeira fase
 
 **Passos:**
@@ -297,6 +309,7 @@ Este documento serve como guia para realizar testes de usabilidade na plataforma
 ---
 
 ### 2.7 Adicionar Observações (Fase 4)
+
 **Objetivo:** Testar coleta de dados
 
 **Passos:**
@@ -318,6 +331,7 @@ Este documento serve como guia para realizar testes de usabilidade na plataforma
 ---
 
 ### 2.8 Visualizar Feedback do Professor
+
 **Objetivo:** Testar comunicação professor-aluno
 
 **Passos:**
@@ -334,9 +348,10 @@ Este documento serve como guia para realizar testes de usabilidade na plataforma
 
 ---
 
-## ✅ CENÁRIO 3: Testes de Interface e Navegação
+## CENÁRIO 3: TESTES DE INTERFACE E NAVEGAÇÃO
 
 ### 3.1 Responsividade
+
 **Objetivo:** Testar em diferentes dispositivos
 
 **Passos:**
@@ -355,6 +370,7 @@ Este documento serve como guia para realizar testes de usabilidade na plataforma
 ---
 
 ### 3.2 Navegação e Breadcrumbs
+
 **Objetivo:** Avaliar facilidade de navegação
 
 **Passos:**
@@ -371,6 +387,7 @@ Este documento serve como guia para realizar testes de usabilidade na plataforma
 ---
 
 ### 3.3 Mensagens de Feedback
+
 **Objetivo:** Verificar clareza das mensagens do sistema
 
 **Passos:**
@@ -388,9 +405,10 @@ Este documento serve como guia para realizar testes de usabilidade na plataforma
 
 ---
 
-## ✅ CENÁRIO 4: Testes de Casos Extremos
+## CENÁRIO 4: TESTES DE CASOS EXTREMOS
 
 ### 4.1 Grupos Cheios
+
 **Objetivo:** Testar comportamento com limite de membros
 
 **Passos:**
@@ -405,6 +423,7 @@ Este documento serve como guia para realizar testes de usabilidade na plataforma
 ---
 
 ### 4.2 Tentativa de Avanço de Fase Sem Aprovação
+
 **Objetivo:** Verificar controle de fluxo
 
 **Passos:**
@@ -418,6 +437,7 @@ Este documento serve como guia para realizar testes de usabilidade na plataforma
 ---
 
 ### 4.3 Código de Turma Inválido
+
 **Objetivo:** Testar validação de entrada em turma
 
 **Passos:**
@@ -430,7 +450,7 @@ Este documento serve como guia para realizar testes de usabilidade na plataforma
 
 ---
 
-## 📊 Questionário de Satisfação
+## QUESTIONÁRIO DE SATISFAÇÃO
 
 Após completar os cenários, peça aos testadores para avaliarem:
 
@@ -450,6 +470,7 @@ Após completar os cenários, peça aos testadores para avaliarem:
 - [ ] A comunicação professor-aluno é eficiente?
 
 ### Perguntas Abertas
+
 1. **O que você mais gostou na plataforma?**
    
    _________________________________________
@@ -468,28 +489,34 @@ Após completar os cenários, peça aos testadores para avaliarem:
 
 ---
 
-## 🐛 Registro de Problemas Encontrados
+## REGISTRO DE PROBLEMAS ENCONTRADOS
 
 ### Problema 1
 - **Descrição:**
 - **Severidade:** (Crítico / Alto / Médio / Baixo)
-- **Reproduzir:**
+- **Como Reproduzir:**
 - **Screenshot:** (se aplicável)
 
 ### Problema 2
 - **Descrição:**
 - **Severidade:**
-- **Reproduzir:**
+- **Como Reproduzir:**
 - **Screenshot:**
 
-_(Continue listando conforme necessário)_
+### Problema 3
+- **Descrição:**
+- **Severidade:**
+- **Como Reproduzir:**
+- **Screenshot:**
+
+(Continue listando conforme necessário)
 
 ---
 
-## ✨ Sugestões de Melhoria
+## SUGESTÕES DE MELHORIA
 
 ### Melhoria 1
-- **Área:** (Ex: Dashboard, Formulários, Navegação)
+- **Área:** (Exemplo: Dashboard, Formulários, Navegação)
 - **Descrição:**
 - **Justificativa:**
 
@@ -498,21 +525,33 @@ _(Continue listando conforme necessário)_
 - **Descrição:**
 - **Justificativa:**
 
-_(Continue listando conforme necessário)_
+### Melhoria 3
+- **Área:**
+- **Descrição:**
+- **Justificativa:**
+
+(Continue listando conforme necessário)
 
 ---
 
-## 🎯 Conclusão do Teste
+## CONCLUSÃO DO TESTE
 
 **Data do teste:** __________________
 
-**Testador:** __________________
+**Nome do testador:** __________________
 
-**Perfil usado:** ☐ Professor  ☐ Estudante
+**Perfil testado:** 
+- [ ] Professor  
+- [ ] Estudante
 
 **Tempo total do teste:** __________________
 
-**Avaliação geral (1-5):** ☐ 1  ☐ 2  ☐ 3  ☐ 4  ☐ 5
+**Avaliação geral (1-5):**
+- [ ] 1 - Muito Insatisfatório
+- [ ] 2 - Insatisfatório
+- [ ] 3 - Neutro
+- [ ] 4 - Satisfatório
+- [ ] 5 - Muito Satisfatório
 
 **Comentários finais:**
 
@@ -522,17 +561,32 @@ _______________________________________________
 
 _______________________________________________
 
+_______________________________________________
+
 ---
 
-## 📞 Contato para Reportar Problemas
+## CONTATO PARA REPORTAR PROBLEMAS
 
 Se você encontrar bugs críticos ou tiver sugestões importantes:
-- **Email:** [seu-email@exemplo.com]
-- **GitHub Issues:** [link-do-repositorio/issues]
+
+**Email:** seu-email@exemplo.com
+
+**Repositório GitHub:** https://github.com/YanPedro00/CIENCIA-CIDADA
+
+**Issues:** https://github.com/YanPedro00/CIENCIA-CIDADA/issues
 
 ---
 
-**Agradecemos pela sua participação nos testes!** 🙏
+## AGRADECIMENTOS
 
-Seu feedback é essencial para melhorar a plataforma e proporcionar uma melhor experiência educacional.
+Agradecemos pela sua participação nos testes de usabilidade!
 
+Seu feedback é essencial para melhorar a plataforma e proporcionar uma melhor experiência educacional para professores e estudantes.
+
+A Plataforma Ciência Cidadã foi desenvolvida para promover o aprendizado do método científico de forma prática e colaborativa.
+
+---
+
+**Data de criação deste documento:** Novembro 2024
+
+**Versão:** 1.0
