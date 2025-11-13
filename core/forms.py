@@ -299,13 +299,30 @@ class AtividadeForm(forms.ModelForm):
             'ativo'
         ]
         widgets = {
+            'titulo': forms.TextInput(attrs={
+                'class': 'form-control',
+                'placeholder': 'Ex: Bem-vindos à disciplina'
+            }),
+            'tipo': forms.Select(attrs={
+                'class': 'form-select'
+            }),
             'descricao': forms.Textarea(attrs={
+                'class': 'form-control',
                 'rows': 6,
                 'placeholder': 'Descreva a atividade, tarefa ou informação...'
             }),
             'data_entrega': forms.DateInput(attrs={
                 'type': 'date',
                 'class': 'form-control'
+            }),
+            'arquivo': forms.FileInput(attrs={
+                'class': 'form-control'
+            }),
+            'fixado': forms.CheckboxInput(attrs={
+                'class': 'form-check-input'
+            }),
+            'ativo': forms.CheckboxInput(attrs={
+                'class': 'form-check-input'
             }),
         }
         labels = {

@@ -53,6 +53,10 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     
+    # Third-party apps
+    'crispy_forms',
+    'crispy_bootstrap5',
+    
     # Apps locais
     'core',
 ]
@@ -182,6 +186,10 @@ MESSAGE_TAGS = {
     messages.WARNING: 'alert-warning',
     messages.ERROR: 'alert-danger',
 }
+
+# Crispy Forms
+CRISPY_ALLOWED_TEMPLATE_PACKS = "bootstrap5"
+CRISPY_TEMPLATE_PACK = "bootstrap5"
 
 # Email (desenvolvimento)
 EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
