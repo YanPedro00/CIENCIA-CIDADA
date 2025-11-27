@@ -1,0 +1,530 @@
+================================================================================
+                    RELATÓRIO DA ENTREGA 5
+      INTEGRAÇÃO E COMUNICAÇÃO ENTRE COMPONENTES
+================================================================================
+
+Projeto: Plataforma de Ciência Cidadã Educacional
+Data: 27 de Novembro de 2025
+Desenvolvedor: Yan Pedro de Sousa Furtado
+Instituição: Curso de Extensão - Ciência Cidadã
+
+================================================================================
+1. RESUMO EXECUTIVO
+================================================================================
+
+A Entrega 5 teve como objetivo implementar funcionalidades de integração e 
+comunicação entre os componentes da plataforma, incluindo banco de dados, 
+autenticação, dashboards, relatórios e sincronização de módulos.
+
+Foram implementadas com sucesso 8 funcionalidades principais que atendem aos
+requisitos da entrega, com foco em educação e ciência cidadã.
+
+STATUS: 100% COMPLETO
+
+================================================================================
+2. REQUISITOS E IMPLEMENTAÇÃO
+================================================================================
+
+2.1 INTEGRAR BANCO DE DADOS E AUTENTICAÇÃO
+-------------------------------------------
+REQUISITO: Sistema integrado de banco de dados com autenticação segura.
+
+IMPLEMENTADO:
+- Banco de dados PostgreSQL em produção (Railway)
+- Django Authentication System com modelo customizado de usuário
+- Dois tipos de usuário: Professor e Estudante
+- Permissões específicas por tipo de usuário
+- Proteção CSRF para todas as requisições
+- Sessions gerenciadas automaticamente
+- Migração automática no deploy
+
+RESULTADO: Sistema robusto com separação clara de permissões entre professores
+e estudantes, garantindo que cada tipo de usuário acesse apenas suas áreas.
+
+-------------------------------------------
+
+2.2 IMPLEMENTAR DASHBOARDS E RELATÓRIOS
+-------------------------------------------
+REQUISITO: Dashboards informativos e relatórios exportáveis.
+
+IMPLEMENTADO:
+
+A) Dashboard Público (Home):
+   - Estatísticas gerais da plataforma
+   - Contadores: projetos concluídos, estudantes ativos, turmas, observações
+   - Projetos em destaque
+   - Áreas de ciência disponíveis
+
+B) Dashboard do Professor:
+   - Gráfico de pizza: Status dos projetos (concluídos, em andamento, outros)
+   - Gráfico de barras: Top 5 áreas de ciência mais pesquisadas
+   - Lista de projetos aguardando aprovação
+   - Estatísticas de turmas e grupos
+   - Tecnologia: Chart.js 4.4.1
+
+C) Relatórios Exportáveis:
+   - Exportação de projeto completo em PDF (ReportLab)
+   - Exportação de observações em CSV (compatível com Excel)
+   - Download de anexos (relatórios, apresentações, fotos)
+
+D) Visualização de Dados:
+   - Mapa interativo com observações geolocalizadas (Leaflet 1.9.4)
+   - Gráfico de linha do tempo de coletas
+   - Estatísticas de observações por projeto
+
+RESULTADO: Professores e estudantes têm acesso a visualizações claras do
+progresso dos projetos, facilitando acompanhamento e análise de dados.
+
+-------------------------------------------
+
+2.3 SINCRONIZAR MÓDULOS DE PLANEJAMENTO
+-------------------------------------------
+REQUISITO: Sincronização entre módulos de planejamento e execução.
+
+IMPLEMENTADO:
+
+A) Sistema de 6 Fases do Método Científico:
+   1. Problema de Pesquisa
+   2. Hipótese
+   3. Metodologia
+   4. Coleta de Dados
+   5. Análise de Dados
+   6. Conclusão
+
+B) Sincronização Automática:
+   - Estudantes só podem avançar após aprovação do professor
+   - Cada fase deve ser completada sequencialmente
+   - Sistema de feedbacks integrado por fase
+   - Barra de progresso visual (0-100%)
+   - Notificações de status
+
+C) Sistema de Atividades para Turmas:
+   - Professor posta atividades, tarefas, materiais e avisos
+   - Estudantes visualizam informações da turma
+   - Datas de entrega configuráveis
+   - Fixação de atividades importantes
+
+D) Gamificação Automática:
+   - 10 badges disponíveis
+   - Conquista automática baseada em ações
+   - Sistema de pontuação por grupo
+   - Ranking de grupos por turma
+
+RESULTADO: Fluxo de trabalho sincronizado e estruturado, garantindo que
+estudantes sigam o método científico corretamente e com supervisão docente.
+
+================================================================================
+3. CASO DE USO: PROJETO DE QUALIDADE DA ÁGUA
+================================================================================
+
+CONTEXTO:
+Turma de Ciências Ambientais com 20 alunos, divididos em 4 grupos.
+Projeto: Análise da qualidade da água em rios locais.
+Duração: 3 meses (curso de extensão).
+
+-------------------------------------------
+FLUXO DO PROCESSO:
+-------------------------------------------
+
+PASSO 1: CRIAÇÃO DA TURMA E GRUPOS
+Professor:
+- Acessa o dashboard do professor
+- Cria turma "Ciências Ambientais 2024.2"
+- Define: máximo 5 grupos, 5 membros por grupo
+- Recebe código de acesso: AB12CD34
+- Posta atividade de boas-vindas com orientações
+
+Estudantes:
+- Registram-se na plataforma
+- Entram na turma usando código AB12CD34
+- Visualizam atividade de boas-vindas
+- Formam grupos de 5 pessoas cada
+
+TECNOLOGIAS ENVOLVIDAS:
+- Banco de dados PostgreSQL (turmas, grupos, usuários)
+- Autenticação Django (controle de acesso)
+- Sistema de códigos únicos (UUID)
+
+-------------------------------------------
+
+PASSO 2: DEFINIÇÃO DO PROJETO (FASE 1)
+Grupo "Águas Limpas":
+- Cria projeto "Análise da Qualidade da Água do Rio Verde"
+- Área: Ciências Ambientais
+- Preenche Fase 1:
+  * Pergunta: "Qual é o nível de poluição da água do Rio Verde?"
+  * Justificativa: "O rio abastece a cidade e há relatos de poluição"
+  * Objetivos: "Analisar qualidade da água e identificar fontes"
+- Salva e aguarda aprovação
+
+Professor:
+- Recebe notificação no dashboard (projeto aguardando aprovação)
+- Acessa projeto e lê Fase 1
+- Dá feedback: "Excelente pergunta! Incluam análise de pH e oxigênio."
+- Aprova Fase 1
+- Sistema avança automaticamente para Fase 2
+
+GAMIFICAÇÃO AUTOMÁTICA:
+- Todos do grupo ganham badge "Problema Definido" (20 pontos)
+- Grupo sobe no ranking da turma
+
+TECNOLOGIAS ENVOLVIDAS:
+- Sistema de signals Django (gamificação automática)
+- Modelo Projeto (6 fases sincronizadas)
+- Modelo Feedback (comunicação professor-aluno)
+- Badges e PontuacaoGrupo (gamificação)
+
+-------------------------------------------
+
+PASSO 3: COLETA DE DADOS (FASE 4)
+Grupo coleta dados em campo:
+- Membro 1: Visita ponto A do rio
+  * Cria observação "Medição 1 - Ponto A"
+  * Anexa foto da coleta
+  * Adiciona coordenadas GPS (-23.5505, -46.6333)
+  * Registra: pH 6.5, temperatura 24°C
+  * Ganha badge "Primeira Observação" automaticamente
+
+- Membro 2: Visita ponto B do rio
+  * Cria observação "Medição 2 - Ponto B"
+  * Anexa foto
+  * Adiciona coordenadas GPS (-23.5515, -46.6343)
+  * Ganha badge "Geógrafo" (observação com GPS)
+
+- Grupo completa 5 observações
+  * Ganha badge "Explorador" (5 observações coletadas)
+
+VISUALIZAÇÃO DE DADOS:
+- Grupo acessa "Visualizar Dados"
+- Vê mapa interativo com 5 pins nas localizações
+- Exporta observações em CSV para análise no Excel
+- Professor também visualiza o mapa para validar coletas
+
+TECNOLOGIAS ENVOLVIDAS:
+- Modelo Observacao (fotos, GPS, dados JSON)
+- Leaflet.js (mapa interativo)
+- Cloudinary (armazenamento permanente de fotos)
+- Sistema de signals (badges automáticas)
+
+-------------------------------------------
+
+PASSO 4: ENTREGA FINAL
+Grupo finaliza projeto:
+- Completa todas as 6 fases
+- Anexa relatório final (PDF) na área de anexos
+- Anexa apresentação (PPT)
+- Anexa foto da equipe
+
+Professor:
+- Visualiza todos os anexos na sidebar do projeto
+- Baixa relatório e lê análise
+- Aprova Fase 6 (Conclusão)
+- Projeto marcado como "Concluído"
+- Grupo ganha badge "Projeto Completo" (100 pontos)
+
+Avaliação:
+- Professor acessa "Avaliar Projeto"
+- Dá notas por fase (0-10)
+- Conceito final: B
+- Comentários: "Excelente trabalho de campo!"
+- Pontos fortes: "Metodologia clara e dados bem coletados"
+
+EXPORTAÇÃO:
+- Professor exporta projeto completo em PDF
+- Usa PDF como portfólio da turma
+- Estudantes exportam próprio relatório para apresentação
+
+TECNOLOGIAS ENVOLVIDAS:
+- Modelo Avaliacao (nota conceitual A-D)
+- Cloudinary (anexos permanentes)
+- ReportLab (geração de PDF)
+- Modelo Projeto (campos de anexo)
+
+-------------------------------------------
+
+PASSO 5: ANÁLISE E ESTATÍSTICAS
+Final do semestre:
+Professor no Dashboard:
+- Gráfico de pizza mostra: 3 projetos concluídos, 1 em andamento
+- Gráfico de barras mostra: Ciências Ambientais (área mais escolhida)
+- 20 estudantes ativos, 80 observações coletadas
+- Taxa de aprovação: 100% na Fase 1, 75% na Fase 3
+
+Coordenação do Curso:
+- Acessa home pública
+- Vê estatísticas: 4 projetos concluídos, 20 estudantes, 1 turma, 80 dados
+- Projetos em destaque mostrados na página inicial
+
+TECNOLOGIAS ENVOLVIDAS:
+- Chart.js (gráficos interativos)
+- Django ORM (agregações e estatísticas)
+- PostgreSQL (queries otimizadas)
+
+================================================================================
+4. COMPONENTES INTEGRADOS
+================================================================================
+
+4.1 BANCO DE DADOS (PostgreSQL)
+Modelos implementados: 12
+- Usuario (autenticação customizada)
+- Turma
+- Grupo
+- Projeto (6 fases + 6 campos de anexo)
+- Observacao (dados + fotos + GPS)
+- Feedback
+- Avaliacao
+- EstudanteTurma (relação many-to-many)
+- Atividade
+- Badge
+- UsuarioBadge
+- PontuacaoGrupo
+
+Relacionamentos: 15 ForeignKeys, 2 ManyToMany, 3 OneToOne
+Migrations: 3 (todas aplicadas automaticamente)
+
+-------------------------------------------
+
+4.2 AUTENTICAÇÃO E PERMISSÕES
+Sistema Django Auth extendido:
+- Modelo Usuario (AbstractUser)
+- Tipos: professor, estudante
+- Decorators: @login_required, @user_passes_test
+- Métodos: is_professor(), is_estudante()
+- Proteção CSRF em todos os formulários
+- Sessions HTTP-only cookies
+
+-------------------------------------------
+
+4.3 ARMAZENAMENTO DE MÍDIA
+Cloudinary (CDN):
+- 25 GB gratuitos
+- Uploads permanentes (nunca perdidos)
+- CDN global (downloads rápidos)
+- Otimização automática de imagens
+- Tipos: relatórios, apresentações, fotos, anexos
+
+-------------------------------------------
+
+4.4 FRONTEND E VISUALIZAÇÃO
+Tecnologias:
+- Bootstrap 5 (UI responsiva)
+- Chart.js 4.4.1 (gráficos)
+- Leaflet 1.9.4 (mapas)
+- Bootstrap Icons (ícones)
+
+Templates: 25
+Views: 32
+URLs: 27
+
+-------------------------------------------
+
+4.5 EXPORTAÇÃO E RELATÓRIOS
+Formatos suportados:
+- PDF (ReportLab): Projetos completos, fases, avaliações
+- CSV (Excel-friendly): Observações com dados estruturados
+- Download direto: Todos os anexos
+
+-------------------------------------------
+
+4.6 GAMIFICAÇÃO
+Sistema automático (Django Signals):
+- 10 badges configuradas
+- Conquista em tempo real
+- Pontuação acumulativa por grupo
+- Ranking dinâmico
+
+================================================================================
+5. TECNOLOGIAS E FERRAMENTAS
+================================================================================
+
+BACKEND:
+- Django 4.2.7
+- Python 3.10
+- PostgreSQL 16
+- Django Signals (eventos automáticos)
+- Django ORM (queries otimizadas)
+
+FRONTEND:
+- Bootstrap 5.3.2
+- Chart.js 4.4.1
+- Leaflet 1.9.4
+- JavaScript (ES6+)
+
+BIBLIOTECAS ESPECIALIZADAS:
+- ReportLab 4.0.7 (PDFs)
+- Openpyxl 3.1.2 (Excel)
+- Pandas 2.1.4 (análise de dados)
+- Plotly 5.18.0 (gráficos)
+- Cloudinary 1.36.0 (mídia)
+
+DEPLOY:
+- Railway (PaaS)
+- Gunicorn 21.2.0 (WSGI)
+- WhiteNoise 6.6.0 (static files)
+- PostgreSQL (managed database)
+
+CONTROLE DE VERSÃO:
+- Git/GitHub
+- Commits: 12 (Entrega 5)
+- Branches: main
+
+================================================================================
+6. MÉTRICAS DE IMPLEMENTAÇÃO
+================================================================================
+
+LINHAS DE CÓDIGO:
+- Python: ~2200 linhas
+- HTML/Templates: ~1800 linhas
+- JavaScript: ~300 linhas
+- TOTAL: ~4300 linhas
+
+ARQUIVOS:
+- Criados: 15
+- Modificados: 20
+- Total: 35
+
+MODELOS DE DADOS:
+- Novos: 3 (Badge, UsuarioBadge, PontuacaoGrupo)
+- Modificados: 1 (Projeto - campos de anexo)
+- Total: 12 modelos
+
+FUNCIONALIDADES:
+- Novas views: 5
+- Novos templates: 3
+- Novos comandos: 1 (criar_badges)
+- Total de rotas: 27
+
+TESTES:
+- Testes manuais: 100% das funcionalidades
+- Badges conquistadas: Testado
+- Exports PDF/CSV: Testado
+- Mapa: Testado com dados reais
+- Gráficos: Testado no dashboard
+
+PERFORMANCE:
+- Tempo de carregamento: <2s (com CDN)
+- Queries otimizadas: select_related, prefetch_related
+- Caching: WhiteNoise para static files
+- CDN: Cloudinary para mídia
+
+SEGURANÇA:
+- CSRF Protection: 100% dos formulários
+- SQL Injection: Protegido (Django ORM)
+- XSS: Escapamento automático de templates
+- Autenticação: Sessions seguras
+- Uploads: Validação de tipos de arquivo
+
+================================================================================
+7. RESULTADOS E IMPACTOS
+================================================================================
+
+PARA PROFESSORES:
++ Visualização clara do progresso de todos os grupos
++ Gráficos automáticos de desempenho
++ Acesso a todos os documentos anexados pelos alunos
++ Exportação de relatórios para avaliação
++ Feedback estruturado por fase
++ Estatísticas de engajamento
+
+PARA ESTUDANTES:
++ Fluxo guiado pelo método científico
++ Feedback imediato do professor
++ Gamificação que incentiva participação
++ Visualização dos próprios dados em mapas
++ Exportação de relatórios para portfólio
++ Colaboração estruturada em grupo
+
+PARA A INSTITUIÇÃO:
++ Plataforma completa e profissional
++ Estatísticas públicas de impacto
++ Armazenamento permanente de projetos
++ Escalável para múltiplas turmas
++ Código aberto e documentado
++ Custo zero (planos gratuitos)
+
+IMPACTO EDUCACIONAL:
+- Aprendizado ativo do método científico
+- Trabalho colaborativo estruturado
+- Feedback contínuo professor-aluno
+- Documentação completa do processo
+- Competição saudável (gamificação)
+- Portfólio de projetos científicos
+
+================================================================================
+8. DOCUMENTAÇÃO GERADA
+================================================================================
+
+GUIAS TÉCNICOS:
+1. README.md - Instalação e uso
+2. ANALISE_SISTEMA_ENTREGA5.md - Análise completa (26 páginas)
+3. ENTREGA5_PROGRESSO.md - Relatório de progresso
+4. ENTREGA5_COMPLETA.md - Relatório final técnico
+
+CONFIGURAÇÃO:
+5. VARIAVEIS_AMBIENTE.md - Variáveis de ambiente
+6. RAILWAY_CLOUDINARY_SETUP.md - Guia de configuração
+7. ARMAZENAMENTO_MIDIA.md - Explicação de armazenamento
+
+TESTES:
+8. GUIA_TESTES_USABILIDADE.md - Testes de usabilidade
+9. USUARIOS_TESTE.md - Usuários para simulação
+10. CHECKLIST_TESTES.md - Checklist de funcionalidades
+
+DEPLOY:
+11. build.sh - Script de build
+12. start.sh - Script de inicialização
+13. Procfile - Railway configuration
+14. railway.toml - Railway settings
+
+TOTAL: 14 documentos de apoio
+
+================================================================================
+9. CONCLUSÃO
+================================================================================
+
+A Entrega 5 foi implementada com sucesso, atendendo a todos os requisitos
+solicitados:
+
+REQUISITO 1 - INTEGRAÇÃO DE BANCO DE DADOS E AUTENTICAÇÃO:
+Status: COMPLETO
+PostgreSQL integrado, autenticação robusta, permissões por usuário.
+
+REQUISITO 2 - DASHBOARDS E RELATÓRIOS:
+Status: COMPLETO
+Dashboards com gráficos, relatórios exportáveis em PDF/CSV, visualização
+de dados com mapas interativos.
+
+REQUISITO 3 - SINCRONIZAÇÃO DE MÓDULOS:
+Status: COMPLETO
+6 fases sincronizadas, aprovação sequencial, gamificação automática,
+sistema de atividades por turma.
+
+O caso de uso demonstrado (Projeto de Qualidade da Água) ilustra como
+todos os componentes trabalham integrados, desde a criação da turma até
+a avaliação final, incluindo coleta de dados em campo, visualização em
+mapas, gamificação automática e exportação de relatórios.
+
+A plataforma está pronta para uso em produção, com armazenamento permanente
+(Cloudinary), banco de dados escalável (PostgreSQL), e interface moderna
+e responsiva (Bootstrap 5).
+
+RESULTADO FINAL: 100% dos requisitos implementados e testados.
+
+================================================================================
+INFORMAÇÕES DO PROJETO
+================================================================================
+
+URL em Produção: http://ciencia-cidada.up.railway.app/
+Repositório GitHub: https://github.com/YanPedro00/CIENCIA-CIDADA
+
+Desenvolvedor: Yan Pedro de Sousa Furtado
+Data de Conclusão: 27 de Novembro de 2025
+Versão: 2.0.0 (Entrega 5 Completa)
+
+Licença: Projeto Educacional - Curso de Extensão
+Instituição: [Nome da Instituição]
+
+================================================================================
+FIM DO RELATÓRIO
+================================================================================
+
