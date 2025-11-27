@@ -54,5 +54,10 @@ urlpatterns = [
     path('atividades/<int:pk>/', views.atividade_detalhe, name='atividade_detalhe'),
     path('atividades/<int:pk>/editar/', views.atividade_editar, name='atividade_editar'),
     path('atividades/<int:pk>/excluir/', views.atividade_excluir, name='atividade_excluir'),
+    
+    # Anexos e Exportações (Entrega 5)
+    path('projetos/<slug:slug>/anexos/', views.projeto_anexos, name='projeto_anexos'),
+    path('projetos/<slug:slug>/exportar-pdf/', views.exportar_projeto_pdf, name='exportar_projeto_pdf'),
+    path('projetos/<slug:slug>/exportar-csv/', views.exportar_observacoes_csv, name='exportar_observacoes_csv'),
 ]
 

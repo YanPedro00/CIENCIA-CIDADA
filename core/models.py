@@ -358,6 +358,47 @@ class Projeto(models.Model):
     fase6_aprovada = models.BooleanField(default=False, verbose_name='Fase 6 Aprovada')
     fase6_aprovada_em = models.DateTimeField(blank=True, null=True)
     
+    # Anexos do Projeto (Documentos e Fotos Adicionais)
+    relatorio_final = models.FileField(
+        upload_to='relatorios/',
+        blank=True,
+        null=True,
+        verbose_name='Relatório Final (PDF/DOCX)',
+        help_text='Documento completo do projeto'
+    )
+    apresentacao = models.FileField(
+        upload_to='apresentacoes/',
+        blank=True,
+        null=True,
+        verbose_name='Apresentação (PPT/PDF)',
+        help_text='Slides da apresentação do projeto'
+    )
+    foto_equipe = models.ImageField(
+        upload_to='fotos_equipe/',
+        blank=True,
+        null=True,
+        verbose_name='Foto da Equipe',
+        help_text='Foto do grupo'
+    )
+    anexo_extra1 = models.FileField(
+        upload_to='anexos/',
+        blank=True,
+        null=True,
+        verbose_name='Anexo Extra 1'
+    )
+    anexo_extra2 = models.FileField(
+        upload_to='anexos/',
+        blank=True,
+        null=True,
+        verbose_name='Anexo Extra 2'
+    )
+    anexo_extra3 = models.FileField(
+        upload_to='anexos/',
+        blank=True,
+        null=True,
+        verbose_name='Anexo Extra 3'
+    )
+    
     # Metadados
     criado_em = models.DateTimeField(auto_now_add=True)
     atualizado_em = models.DateTimeField(auto_now=True)
@@ -747,3 +788,108 @@ class Atividade(models.Model):
     
     def __str__(self):
         return f"{self.titulo} - {self.turma.nome}"
+
+
+class Badge(models.Model):
+    """
+    Badge/Conquista que pode ser obtida por estudantes.
+    """
+    nome = models.CharField(max_length=100, verbose_name='Nome da Badge')
+    descricao = models.TextField(verbose_name='Descrição')
+    icone = models.CharField(
+        max_length=50,
+        default='🏆',
+        verbose_name='Ícone (Emoji)',
+        help_text='Emoji que representa a badge'
+    )
+    pontos = models.IntegerField(
+        default=10,
+        validators=[MinValueValidator(0)],
+        verbose_name='Pontos',
+        help_text='Pontos ganhos ao conquistar esta badge'
+    )
+    
+    # Critério de conquista
+    CRITERIOS = (
+        ('primeira_observacao', 'Primeira Observação Criada'),
+        ('cinco_observacoes', '5 Observações Criadas'),
+        ('fase1_completa', 'Fase 1 Aprovada'),
+        ('fase3_completa', 'Fase 3 Aprovada'),
+        ('fase6_completa', 'Fase 6 Aprovada'),
+        ('projeto_concluido', 'Projeto Concluído'),
+        ('primeira_foto', 'Primeira Foto Anexada'),
+        ('explorador', 'Observações com Geolocalização'),
+        ('colaborador', 'Membro de Grupo'),
+        ('lider', 'Líder de Grupo'),
+    )
+    criterio = models.CharField(
+        max_length=50,
+        choices=CRITERIOS,
+        unique=True,
+        verbose_name='Critério'
+    )
+    
+    ativa = models.BooleanField(default=True, verbose_name='Ativa')
+    criada_em = models.DateTimeField(auto_now_add=True)
+    
+    class Meta:
+        verbose_name = 'Badge'
+        verbose_name_plural = 'Badges'
+        ordering = ['nome']
+    
+    def __str__(self):
+        return f"{self.icone} {self.nome}"
+
+
+class UsuarioBadge(models.Model):
+    """
+    Relação entre usuário e badges conquistadas.
+    """
+    usuario = models.ForeignKey(
+        Usuario,
+        on_delete=models.CASCADE,
+        related_name='badges_conquistadas',
+        verbose_name='Usuário'
+    )
+    badge = models.ForeignKey(
+        Badge,
+        on_delete=models.CASCADE,
+        related_name='conquistadores',
+        verbose_name='Badge'
+    )
+    conquistada_em = models.DateTimeField(auto_now_add=True, verbose_name='Conquistada em')
+    
+    class Meta:
+        verbose_name = 'Badge do Usuário'
+        verbose_name_plural = 'Badges dos Usuários'
+        unique_together = ['usuario', 'badge']
+        ordering = ['-conquistada_em']
+    
+    def __str__(self):
+        return f"{self.usuario.username} - {self.badge.nome}"
+
+
+class PontuacaoGrupo(models.Model):
+    """
+    Pontuação acumulada de um grupo.
+    """
+    grupo = models.OneToOneField(
+        Grupo,
+        on_delete=models.CASCADE,
+        related_name='pontuacao',
+        verbose_name='Grupo'
+    )
+    pontos_totais = models.IntegerField(
+        default=0,
+        validators=[MinValueValidator(0)],
+        verbose_name='Pontos Totais'
+    )
+    atualizada_em = models.DateTimeField(auto_now=True, verbose_name='Atualizada em')
+    
+    class Meta:
+        verbose_name = 'Pontuação do Grupo'
+        verbose_name_plural = 'Pontuações dos Grupos'
+        ordering = ['-pontos_totais']
+    
+    def __str__(self):
+        return f"{self.grupo.nome} - {self.pontos_totais} pontos"

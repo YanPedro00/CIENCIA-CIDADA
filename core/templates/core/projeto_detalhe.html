@@ -45,6 +45,24 @@
                     </div>
                 </div>
             </div>
+            
+            <!-- Botões de Ação (ENTREGA 5) -->
+            <div class="d-flex gap-2 flex-wrap">
+                {% if user.tipo == 'estudante' and user in projeto.grupo.membros.all %}
+                    <a href="{% url 'projeto_anexos' projeto.slug %}" class="btn btn-outline-primary">
+                        <i class="bi bi-paperclip"></i> Anexar Documentos
+                    </a>
+                {% endif %}
+                
+                {% if user.tipo == 'professor' or user in projeto.grupo.membros.all %}
+                    <a href="{% url 'exportar_projeto_pdf' projeto.slug %}" class="btn btn-outline-danger">
+                        <i class="bi bi-file-pdf"></i> Exportar PDF
+                    </a>
+                    <a href="{% url 'exportar_observacoes_csv' projeto.slug %}" class="btn btn-outline-success">
+                        <i class="bi bi-file-spreadsheet"></i> Exportar Observações (CSV)
+                    </a>
+                {% endif %}
+            </div>
         </div>
     </div>
 

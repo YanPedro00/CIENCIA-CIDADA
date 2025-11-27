@@ -1,0 +1,192 @@
+{% extends 'base.html' %}
+
+{% block title %}{{ titulo }} - {{ projeto.titulo }}{% endblock %}
+
+{% block content %}
+<div class="container my-5">
+    <nav aria-label="breadcrumb">
+        <ol class="breadcrumb">
+            <li class="breadcrumb-item"><a href="{% url 'dashboard' %}">Dashboard</a></li>
+            <li class="breadcrumb-item"><a href="{% url 'projeto_detalhe' projeto.slug %}">{{ projeto.titulo }}</a></li>
+            <li class="breadcrumb-item active">Anexos</li>
+        </ol>
+    </nav>
+
+    <div class="row">
+        <div class="col-lg-8 mx-auto">
+            <div class="card shadow-sm">
+                <div class="card-header bg-primary text-white">
+                    <h4 class="mb-0">
+                        <i class="bi bi-paperclip"></i> {{ titulo }}
+                    </h4>
+                </div>
+                <div class="card-body">
+                    <p class="text-muted">
+                        Anexe documentos e fotos importantes do projeto. Esses arquivos ficarão disponíveis
+                        no relatório do projeto e poderão ser visualizados pelo professor.
+                    </p>
+
+                    <form method="post" enctype="multipart/form-data">
+                        {% csrf_token %}
+                        
+                        <div class="row">
+                            <!-- Relatório Final -->
+                            <div class="col-md-6 mb-3">
+                                <label for="{{ form.relatorio_final.id_for_label }}" class="form-label">
+                                    <i class="bi bi-file-earmark-pdf text-danger"></i>
+                                    {{ form.relatorio_final.label }}
+                                </label>
+                                {{ form.relatorio_final }}
+                                {% if form.relatorio_final.help_text %}
+                                <div class="form-text">{{ form.relatorio_final.help_text }}</div>
+                                {% endif %}
+                                {% if projeto.relatorio_final %}
+                                <div class="mt-2">
+                                    <small class="text-success">
+                                        <i class="bi bi-check-circle"></i> Arquivo anexado:
+                                        <a href="{{ projeto.relatorio_final.url }}" target="_blank">
+                                            {{ projeto.relatorio_final.name|truncatechars:30 }}
+                                        </a>
+                                    </small>
+                                </div>
+                                {% endif %}
+                                {% if form.relatorio_final.errors %}
+                                <div class="invalid-feedback d-block">
+                                    {{ form.relatorio_final.errors }}
+                                </div>
+                                {% endif %}
+                            </div>
+
+                            <!-- Apresentação -->
+                            <div class="col-md-6 mb-3">
+                                <label for="{{ form.apresentacao.id_for_label }}" class="form-label">
+                                    <i class="bi bi-file-earmark-slides text-warning"></i>
+                                    {{ form.apresentacao.label }}
+                                </label>
+                                {{ form.apresentacao }}
+                                {% if form.apresentacao.help_text %}
+                                <div class="form-text">{{ form.apresentacao.help_text }}</div>
+                                {% endif %}
+                                {% if projeto.apresentacao %}
+                                <div class="mt-2">
+                                    <small class="text-success">
+                                        <i class="bi bi-check-circle"></i> Arquivo anexado:
+                                        <a href="{{ projeto.apresentacao.url }}" target="_blank">
+                                            {{ projeto.apresentacao.name|truncatechars:30 }}
+                                        </a>
+                                    </small>
+                                </div>
+                                {% endif %}
+                                {% if form.apresentacao.errors %}
+                                <div class="invalid-feedback d-block">
+                                    {{ form.apresentacao.errors }}
+                                </div>
+                                {% endif %}
+                            </div>
+                        </div>
+
+                        <div class="row">
+                            <!-- Foto da Equipe -->
+                            <div class="col-md-12 mb-3">
+                                <label for="{{ form.foto_equipe.id_for_label }}" class="form-label">
+                                    <i class="bi bi-camera text-info"></i>
+                                    {{ form.foto_equipe.label }}
+                                </label>
+                                {{ form.foto_equipe }}
+                                {% if form.foto_equipe.help_text %}
+                                <div class="form-text">{{ form.foto_equipe.help_text }}</div>
+                                {% endif %}
+                                {% if projeto.foto_equipe %}
+                                <div class="mt-3">
+                                    <img src="{{ projeto.foto_equipe.url }}" alt="Foto da Equipe" class="img-thumbnail" style="max-width: 300px;">
+                                </div>
+                                {% endif %}
+                                {% if form.foto_equipe.errors %}
+                                <div class="invalid-feedback d-block">
+                                    {{ form.foto_equipe.errors }}
+                                </div>
+                                {% endif %}
+                            </div>
+                        </div>
+
+                        <hr class="my-4">
+                        <h5 class="mb-3">Anexos Extras (Opcional)</h5>
+                        <p class="text-muted small">
+                            Você pode anexar até 3 arquivos adicionais (documentos, planilhas, imagens, etc.)
+                        </p>
+
+                        <div class="row">
+                            <!-- Anexo Extra 1 -->
+                            <div class="col-md-4 mb-3">
+                                <label for="{{ form.anexo_extra1.id_for_label }}" class="form-label">
+                                    <i class="bi bi-file-earmark"></i>
+                                    {{ form.anexo_extra1.label }}
+                                </label>
+                                {{ form.anexo_extra1 }}
+                                {% if projeto.anexo_extra1 %}
+                                <div class="mt-2">
+                                    <small class="text-success">
+                                        <i class="bi bi-check-circle"></i>
+                                        <a href="{{ projeto.anexo_extra1.url }}" target="_blank">
+                                            {{ projeto.anexo_extra1.name|truncatechars:20 }}
+                                        </a>
+                                    </small>
+                                </div>
+                                {% endif %}
+                            </div>
+
+                            <!-- Anexo Extra 2 -->
+                            <div class="col-md-4 mb-3">
+                                <label for="{{ form.anexo_extra2.id_for_label }}" class="form-label">
+                                    <i class="bi bi-file-earmark"></i>
+                                    {{ form.anexo_extra2.label }}
+                                </label>
+                                {{ form.anexo_extra2 }}
+                                {% if projeto.anexo_extra2 %}
+                                <div class="mt-2">
+                                    <small class="text-success">
+                                        <i class="bi bi-check-circle"></i>
+                                        <a href="{{ projeto.anexo_extra2.url }}" target="_blank">
+                                            {{ projeto.anexo_extra2.name|truncatechars:20 }}
+                                        </a>
+                                    </small>
+                                </div>
+                                {% endif %}
+                            </div>
+
+                            <!-- Anexo Extra 3 -->
+                            <div class="col-md-4 mb-3">
+                                <label for="{{ form.anexo_extra3.id_for_label }}" class="form-label">
+                                    <i class="bi bi-file-earmark"></i>
+                                    {{ form.anexo_extra3.label }}
+                                </label>
+                                {{ form.anexo_extra3 }}
+                                {% if projeto.anexo_extra3 %}
+                                <div class="mt-2">
+                                    <small class="text-success">
+                                        <i class="bi bi-check-circle"></i>
+                                        <a href="{{ projeto.anexo_extra3.url }}" target="_blank">
+                                            {{ projeto.anexo_extra3.name|truncatechars:20 }}
+                                        </a>
+                                    </small>
+                                </div>
+                                {% endif %}
+                            </div>
+                        </div>
+
+                        <div class="d-grid gap-2 d-md-flex justify-content-md-end mt-4">
+                            <a href="{% url 'projeto_detalhe' projeto.slug %}" class="btn btn-secondary">
+                                <i class="bi bi-x-circle"></i> Cancelar
+                            </a>
+                            <button type="submit" class="btn btn-primary">
+                                <i class="bi bi-save"></i> Salvar Anexos
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+

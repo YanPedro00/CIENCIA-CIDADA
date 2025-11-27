@@ -12,7 +12,7 @@ from .forms import (
     RegistroForm, LoginForm, TurmaForm, GrupoForm,
     ProjetoForm, ObservacaoForm, FeedbackForm, AvaliacaoForm,
     EntrarTurmaForm, Fase1Form, Fase2Form, Fase3Form,
-    Fase5Form, Fase6Form, AtividadeForm
+    Fase5Form, Fase6Form, AtividadeForm, AnexosProjetoForm
 )
 
 
@@ -878,3 +878,255 @@ def atividade_excluir(request, pk):
         'turma': turma,
     }
     return render(request, 'core/atividade_confirmar_exclusao.html', context)
+
+
+# ============== Anexos do Projeto ==============
+
+@login_required
+def projeto_anexos(request, slug):
+    """Gerenciar anexos do projeto (relatório, apresentação, fotos)"""
+    projeto = get_object_or_404(Projeto, slug=slug)
+    
+    # Verificar permissão (apenas membros do grupo ou professor)
+    if request.user.is_estudante():
+        if request.user not in projeto.grupo.membros.all():
+            messages.error(request, 'Você não tem permissão para editar este projeto.')
+            return redirect('projeto_detalhe', slug=slug)
+    elif request.user.is_professor():
+        if projeto.grupo.turma.professor != request.user:
+            messages.error(request, 'Você não tem permissão para acessar este projeto.')
+            return redirect('dashboard')
+    
+    if request.method == 'POST':
+        form = AnexosProjetoForm(request.POST, request.FILES, instance=projeto)
+        if form.is_valid():
+            form.save()
+            messages.success(request, 'Anexos atualizados com sucesso!')
+            return redirect('projeto_detalhe', slug=slug)
+    else:
+        form = AnexosProjetoForm(instance=projeto)
+    
+    context = {
+        'form': form,
+        'projeto': projeto,
+        'titulo': 'Anexar Documentos e Fotos',
+    }
+    return render(request, 'core/projeto_anexos_form.html', context)
+
+
+# ============== Exportação de Relatórios ==============
+
+@login_required
+def exportar_projeto_pdf(request, slug):
+    """Exportar projeto completo em PDF"""
+    from django.http import HttpResponse
+    from reportlab.lib import colors
+    from reportlab.lib.pagesizes import letter, A4
+    from reportlab.platypus import SimpleDocTemplate, Table, TableStyle, Paragraph, Spacer, PageBreak
+    from reportlab.lib.styles import getSampleStyleSheet, ParagraphStyle
+    from reportlab.lib.units import inch
+    from reportlab.lib.enums import TA_CENTER, TA_JUSTIFY
+    import io
+    
+    projeto = get_object_or_404(Projeto, slug=slug)
+    
+    # Verificar permissão
+    if request.user.is_professor():
+        if projeto.grupo.turma.professor != request.user:
+            messages.error(request, 'Você não tem permissão.')
+            return redirect('dashboard')
+    else:
+        if request.user not in projeto.grupo.membros.all():
+            messages.error(request, 'Você não tem permissão.')
+            return redirect('dashboard')
+    
+    # Criar PDF
+    buffer = io.BytesIO()
+    doc = SimpleDocTemplate(buffer, pagesize=A4, rightMargin=72, leftMargin=72, topMargin=72, bottomMargin=18)
+    
+    # Container para elementos
+    elements = []
+    
+    # Estilos
+    styles = getSampleStyleSheet()
+    title_style = ParagraphStyle(
+        'CustomTitle',
+        parent=styles['Heading1'],
+        fontSize=24,
+        textColor=colors.HexColor('#2c3e50'),
+        spaceAfter=30,
+        alignment=TA_CENTER,
+    )
+    heading_style = ParagraphStyle(
+        'CustomHeading',
+        parent=styles['Heading2'],
+        fontSize=16,
+        textColor=colors.HexColor('#34495e'),
+        spaceAfter=12,
+        spaceBefore=12,
+    )
+    normal_style = ParagraphStyle(
+        'CustomNormal',
+        parent=styles['BodyText'],
+        fontSize=11,
+        alignment=TA_JUSTIFY,
+    )
+    
+    # Título
+    elements.append(Paragraph(projeto.titulo, title_style))
+    elements.append(Spacer(1, 12))
+    
+    # Informações básicas
+    info_data = [
+        ['Grupo:', projeto.grupo.nome],
+        ['Turma:', projeto.grupo.turma.nome],
+        ['Área da Ciência:', projeto.get_area_ciencia_display()],
+        ['Status:', projeto.get_status_display()],
+        ['Progresso:', f"{projeto.get_progresso_percentual():.0f}%"],
+    ]
+    info_table = Table(info_data, colWidths=[2*inch, 4*inch])
+    info_table.setStyle(TableStyle([
+        ('BACKGROUND', (0, 0), (0, -1), colors.HexColor('#ecf0f1')),
+        ('TEXTCOLOR', (0, 0), (-1, -1), colors.HexColor('#2c3e50')),
+        ('ALIGN', (0, 0), (-1, -1), 'LEFT'),
+        ('FONTNAME', (0, 0), (0, -1), 'Helvetica-Bold'),
+        ('FONTSIZE', (0, 0), (-1, -1), 10),
+        ('BOTTOMPADDING', (0, 0), (-1, -1), 8),
+        ('GRID', (0, 0), (-1, -1), 0.5, colors.grey),
+    ]))
+    elements.append(info_table)
+    elements.append(Spacer(1, 20))
+    
+    # Descrição
+    elements.append(Paragraph("Descrição do Projeto", heading_style))
+    elements.append(Paragraph(projeto.descricao_breve or "Não informado", normal_style))
+    elements.append(Spacer(1, 20))
+    
+    # Fase 1
+    if projeto.fase1_pergunta:
+        elements.append(Paragraph("FASE 1: PROBLEMA DE PESQUISA", heading_style))
+        elements.append(Paragraph(f"<b>Pergunta:</b> {projeto.fase1_pergunta}", normal_style))
+        elements.append(Spacer(1, 6))
+        if projeto.fase1_justificativa:
+            elements.append(Paragraph(f"<b>Justificativa:</b> {projeto.fase1_justificativa}", normal_style))
+            elements.append(Spacer(1, 6))
+        if projeto.fase1_objetivos:
+            elements.append(Paragraph(f"<b>Objetivos:</b> {projeto.fase1_objetivos}", normal_style))
+        elements.append(Spacer(1, 12))
+    
+    # Fase 2
+    if projeto.fase2_hipotese_principal:
+        elements.append(Paragraph("FASE 2: HIPÓTESE", heading_style))
+        elements.append(Paragraph(f"<b>Hipótese:</b> {projeto.fase2_hipotese_principal}", normal_style))
+        elements.append(Spacer(1, 6))
+        if projeto.fase2_fundamentacao:
+            elements.append(Paragraph(f"<b>Fundamentação:</b> {projeto.fase2_fundamentacao}", normal_style))
+        elements.append(Spacer(1, 12))
+    
+    # Fase 3
+    if projeto.fase3_metodo_coleta:
+        elements.append(Paragraph("FASE 3: METODOLOGIA", heading_style))
+        elements.append(Paragraph(f"<b>Método:</b> {projeto.fase3_metodo_coleta}", normal_style))
+        elements.append(Spacer(1, 6))
+        if projeto.fase3_materiais:
+            elements.append(Paragraph(f"<b>Materiais:</b> {projeto.fase3_materiais}", normal_style))
+            elements.append(Spacer(1, 6))
+        if projeto.fase3_local:
+            elements.append(Paragraph(f"<b>Local:</b> {projeto.fase3_local}", normal_style))
+        elements.append(Spacer(1, 12))
+    
+    # Fase 4 - Observações
+    observacoes = projeto.observacoes.all()
+    if observacoes.exists():
+        elements.append(Paragraph("FASE 4: COLETA DE DADOS", heading_style))
+        elements.append(Paragraph(f"Total de observações coletadas: {observacoes.count()}", normal_style))
+        elements.append(Spacer(1, 6))
+        for obs in observacoes[:10]:  # Limitar a 10 observações
+            elements.append(Paragraph(f"• <b>{obs.titulo}</b>: {obs.descricao[:200]}...", normal_style))
+        if observacoes.count() > 10:
+            elements.append(Paragraph(f"... e mais {observacoes.count() - 10} observações.", normal_style))
+        elements.append(Spacer(1, 12))
+    
+    # Fase 5
+    if projeto.fase5_interpretacao:
+        elements.append(Paragraph("FASE 5: ANÁLISE DE DADOS", heading_style))
+        elements.append(Paragraph(f"<b>Interpretação:</b> {projeto.fase5_interpretacao}", normal_style))
+        elements.append(Spacer(1, 6))
+        if projeto.fase5_discussao:
+            elements.append(Paragraph(f"<b>Discussão:</b> {projeto.fase5_discussao}", normal_style))
+        elements.append(Spacer(1, 12))
+    
+    # Fase 6
+    if projeto.fase6_conclusao:
+        elements.append(Paragraph("FASE 6: CONCLUSÃO", heading_style))
+        if projeto.fase6_hipotese_confirmada:
+            elements.append(Paragraph(f"<b>Hipótese:</b> {projeto.get_fase6_hipotese_confirmada_display()}", normal_style))
+            elements.append(Spacer(1, 6))
+        elements.append(Paragraph(f"<b>Conclusão:</b> {projeto.fase6_conclusao}", normal_style))
+        elements.append(Spacer(1, 6))
+        if projeto.fase6_aprendizados:
+            elements.append(Paragraph(f"<b>Aprendizados:</b> {projeto.fase6_aprendizados}", normal_style))
+        elements.append(Spacer(1, 12))
+    
+    # Avaliação (se existir)
+    try:
+        avaliacao = projeto.avaliacao
+        elements.append(PageBreak())
+        elements.append(Paragraph("AVALIAÇÃO DO PROFESSOR", heading_style))
+        elements.append(Paragraph(f"<b>Conceito:</b> {avaliacao.get_conceito_display()}", normal_style))
+        elements.append(Paragraph(f"<b>Média:</b> {avaliacao.media_notas():.1f}", normal_style))
+        elements.append(Spacer(1, 12))
+        if avaliacao.comentarios:
+            elements.append(Paragraph(f"<b>Comentários:</b> {avaliacao.comentarios}", normal_style))
+    except Avaliacao.DoesNotExist:
+        pass
+    
+    # Build PDF
+    doc.build(elements)
+    
+    # Retornar PDF
+    buffer.seek(0)
+    response = HttpResponse(buffer, content_type='application/pdf')
+    response['Content-Disposition'] = f'attachment; filename="projeto_{projeto.slug}.pdf"'
+    
+    return response
+
+
+@login_required
+def exportar_observacoes_csv(request, slug):
+    """Exportar observações do projeto em CSV"""
+    import csv
+    from django.http import HttpResponse
+    
+    projeto = get_object_or_404(Projeto, slug=slug)
+    
+    # Verificar permissão
+    if request.user.is_professor():
+        if projeto.grupo.turma.professor != request.user:
+            messages.error(request, 'Você não tem permissão.')
+            return redirect('dashboard')
+    else:
+        if request.user not in projeto.grupo.membros.all():
+            messages.error(request, 'Você não tem permissão.')
+            return redirect('dashboard')
+    
+    # Criar CSV
+    response = HttpResponse(content_type='text/csv')
+    response['Content-Disposition'] = f'attachment; filename="observacoes_{projeto.slug}.csv"'
+    response.write('\ufeff'.encode('utf8'))  # BOM para Excel reconhecer UTF-8
+    
+    writer = csv.writer(response, delimiter=';')
+    writer.writerow(['Título', 'Descrição', 'Coletado por', 'Data e Hora', 'Local', 'Latitude', 'Longitude'])
+    
+    for obs in projeto.observacoes.all():
+        writer.writerow([
+            obs.titulo,
+            obs.descricao,
+            obs.usuario.get_full_name(),
+            obs.data_hora_coleta.strftime('%d/%m/%Y %H:%M'),
+            obs.local_descricao or '',
+            obs.latitude or '',
+            obs.longitude or '',
+        ])
+    
+    return response

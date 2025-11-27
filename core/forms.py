@@ -340,3 +340,56 @@ class AtividadeForm(forms.ModelForm):
             'fixado': 'Atividades fixadas aparecem no topo da lista',
         }
 
+
+class AnexosProjetoForm(forms.ModelForm):
+    """Formulário para anexar documentos e fotos ao projeto"""
+    class Meta:
+        model = Projeto
+        fields = [
+            'relatorio_final',
+            'apresentacao',
+            'foto_equipe',
+            'anexo_extra1',
+            'anexo_extra2',
+            'anexo_extra3'
+        ]
+        widgets = {
+            'relatorio_final': forms.FileInput(attrs={
+                'class': 'form-control',
+                'accept': '.pdf,.doc,.docx'
+            }),
+            'apresentacao': forms.FileInput(attrs={
+                'class': 'form-control',
+                'accept': '.pdf,.ppt,.pptx'
+            }),
+            'foto_equipe': forms.FileInput(attrs={
+                'class': 'form-control',
+                'accept': 'image/*'
+            }),
+            'anexo_extra1': forms.FileInput(attrs={
+                'class': 'form-control'
+            }),
+            'anexo_extra2': forms.FileInput(attrs={
+                'class': 'form-control'
+            }),
+            'anexo_extra3': forms.FileInput(attrs={
+                'class': 'form-control'
+            }),
+        }
+        labels = {
+            'relatorio_final': 'Relatório Final',
+            'apresentacao': 'Apresentação',
+            'foto_equipe': 'Foto da Equipe',
+            'anexo_extra1': 'Anexo Extra 1',
+            'anexo_extra2': 'Anexo Extra 2',
+            'anexo_extra3': 'Anexo Extra 3',
+        }
+        help_texts = {
+            'relatorio_final': 'Documento completo do projeto (PDF ou DOCX)',
+            'apresentacao': 'Slides da apresentação (PDF ou PPTX)',
+            'foto_equipe': 'Foto do grupo trabalhando',
+            'anexo_extra1': 'Documento ou imagem adicional',
+            'anexo_extra2': 'Documento ou imagem adicional',
+            'anexo_extra3': 'Documento ou imagem adicional',
+        }
+

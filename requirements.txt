@@ -27,3 +27,13 @@ whitenoise==6.6.0
 # Timezone
 pytz==2023.3
 
+# Relatórios e Exportação (Entrega 5)
+reportlab==4.0.7
+openpyxl==3.1.2
+pandas==2.1.4
+
+# Visualização de Dados (Entrega 5)
+plotly==5.18.0
+folium==0.15.1
+matplotlib==3.8.2
+

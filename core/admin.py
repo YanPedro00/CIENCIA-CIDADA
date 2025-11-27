@@ -3,7 +3,8 @@ from django.contrib.auth.admin import UserAdmin as BaseUserAdmin
 from django.utils.html import format_html
 from .models import (
     Usuario, Turma, Grupo, Projeto, Observacao, 
-    Feedback, Avaliacao, EstudanteTurma, Atividade
+    Feedback, Avaliacao, EstudanteTurma, Atividade,
+    Badge, UsuarioBadge, PontuacaoGrupo
 )
 
 
@@ -308,3 +309,46 @@ class AtividadeAdmin(admin.ModelAdmin):
             'classes': ('collapse',)
         }),
     )
+
+
+@admin.register(Badge)
+class BadgeAdmin(admin.ModelAdmin):
+    """Admin para Badge (Gamificação - Entrega 5)"""
+    list_display = ['icone', 'nome', 'criterio', 'pontos', 'ativa', 'criada_em']
+    list_filter = ['ativa', 'criterio']
+    search_fields = ['nome', 'descricao']
+    list_editable = ['ativa']
+    readonly_fields = ['criada_em']
+    
+    fieldsets = (
+        ('Informações da Badge', {
+            'fields': ('nome', 'descricao', 'icone', 'pontos')
+        }),
+        ('Critério de Conquista', {
+            'fields': ('criterio', 'ativa')
+        }),
+        ('Metadados', {
+            'fields': ('criada_em',),
+            'classes': ('collapse',)
+        }),
+    )
+
+
+@admin.register(UsuarioBadge)
+class UsuarioBadgeAdmin(admin.ModelAdmin):
+    """Admin para UsuarioBadge (Gamificação - Entrega 5)"""
+    list_display = ['usuario', 'badge', 'conquistada_em']
+    list_filter = ['badge', 'conquistada_em']
+    search_fields = ['usuario__username', 'badge__nome']
+    readonly_fields = ['conquistada_em']
+    date_hierarchy = 'conquistada_em'
+
+
+@admin.register(PontuacaoGrupo)
+class PontuacaoGrupoAdmin(admin.ModelAdmin):
+    """Admin para PontuacaoGrupo (Gamificação - Entrega 5)"""
+    list_display = ['grupo', 'pontos_totais', 'atualizada_em']
+    list_filter = ['grupo__turma']
+    search_fields = ['grupo__nome']
+    readonly_fields = ['atualizada_em']
+    ordering = ['-pontos_totais']
