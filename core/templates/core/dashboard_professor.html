@@ -53,6 +53,32 @@
         </div>
     </div>
 
+    <!-- Gráficos (ENTREGA 5) -->
+    {% if total_projetos > 0 %}
+    <div class="row mb-4">
+        <div class="col-md-6 mb-3">
+            <div class="card">
+                <div class="card-header bg-info text-white">
+                    <h6 class="mb-0"><i class="bi bi-pie-chart"></i> Status dos Projetos</h6>
+                </div>
+                <div class="card-body">
+                    <canvas id="chartStatusProjetos" height="200"></canvas>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-6 mb-3">
+            <div class="card">
+                <div class="card-header bg-success text-white">
+                    <h6 class="mb-0"><i class="bi bi-bar-chart"></i> Áreas de Ciência</h6>
+                </div>
+                <div class="card-body">
+                    <canvas id="chartAreasCiencia" height="200"></canvas>
+                </div>
+            </div>
+        </div>
+    </div>
+    {% endif %}
+
     <!-- Projetos Pendentes -->
     {% if projetos_pendentes %}
     <div class="card mb-4">
@@ -141,5 +167,91 @@
         </div>
     </div>
 </div>
+{% endblock %}
+
+{% block extra_js %}
+{% if total_projetos > 0 %}
+<script>
+// Gráfico de Status dos Projetos
+const ctxStatus = document.getElementById('chartStatusProjetos');
+if (ctxStatus) {
+    new Chart(ctxStatus, {
+        type: 'doughnut',
+        data: {
+            labels: ['Concluídos', 'Em Andamento', 'Outros'],
+            datasets: [{
+                data: [
+                    {{ projetos_concluidos }},
+                    {{ projetos_em_andamento }},
+                    {{ total_projetos }} - {{ projetos_concluidos }} - {{ projetos_em_andamento }}
+                ],
+                backgroundColor: [
+                    'rgba(16, 185, 129, 0.8)',  // verde
+                    'rgba(37, 99, 235, 0.8)',   // azul
+                    'rgba(156, 163, 175, 0.8)'  // cinza
+                ],
+                borderWidth: 2,
+                borderColor: '#fff'
+            }]
+        },
+        options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            plugins: {
+                legend: {
+                    position: 'bottom',
+                }
+            }
+        }
+    });
+}
+
+// Gráfico de Áreas de Ciência
+const ctxAreas = document.getElementById('chartAreasCiencia');
+if (ctxAreas) {
+    const areasLabels = [
+        {% for area in areas_distribuicao %}
+            '{{ area.area_ciencia|title }}'{% if not forloop.last %},{% endif %}
+        {% endfor %}
+    ];
+    const areasData = [
+        {% for area in areas_distribuicao %}
+            {{ area.total }}{% if not forloop.last %},{% endif %}
+        {% endfor %}
+    ];
+    
+    new Chart(ctxAreas, {
+        type: 'bar',
+        data: {
+            labels: areasLabels,
+            datasets: [{
+                label: 'Número de Projetos',
+                data: areasData,
+                backgroundColor: 'rgba(37, 99, 235, 0.8)',
+                borderColor: 'rgba(37, 99, 235, 1)',
+                borderWidth: 1
+            }]
+        },
+        options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            scales: {
+                y: {
+                    beginAtZero: true,
+                    ticks: {
+                        stepSize: 1
+                    }
+                }
+            },
+            plugins: {
+                legend: {
+                    display: false
+                }
+            }
+        }
+    });
+}
+</script>
+{% endif %}
 {% endblock %}
 

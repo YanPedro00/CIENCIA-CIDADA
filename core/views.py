@@ -35,6 +35,8 @@ def home(request):
     context = {
         'total_projetos': Projeto.objects.filter(status='concluido').count(),
         'total_estudantes': Usuario.objects.filter(tipo='estudante').count(),
+        'total_turmas': Turma.objects.filter(ativa=True).count(),
+        'total_observacoes': Observacao.objects.count(),
         'projetos_destaque': Projeto.objects.filter(
             status='concluido'
         ).select_related('grupo', 'grupo__turma').order_by('-concluido_em')[:3]
@@ -106,10 +108,26 @@ def dashboard(request):
             status='aguardando_aprovacao'
         ).select_related('grupo', 'grupo__turma')[:5]
         
+        # Estatísticas de projetos (ENTREGA 5)
+        projetos_professor = Projeto.objects.filter(grupo__turma__professor=user)
+        total_projetos = projetos_professor.count()
+        projetos_concluidos = projetos_professor.filter(status='concluido').count()
+        projetos_em_andamento = projetos_professor.filter(status='em_andamento').count()
+        
+        # Distribuição por área de ciência
+        from django.db.models import Count as CountFunc
+        areas_distribuicao = projetos_professor.values('area_ciencia').annotate(
+            total=CountFunc('id')
+        ).order_by('-total')[:5]
+        
         context = {
             'turmas': turmas,
             'projetos_pendentes': projetos_pendentes,
             'total_turmas': turmas.count(),
+            'total_projetos': total_projetos,
+            'projetos_concluidos': projetos_concluidos,
+            'projetos_em_andamento': projetos_em_andamento,
+            'areas_distribuicao': areas_distribuicao,
         }
         return render(request, 'core/dashboard_professor.html', context)
     
@@ -1090,6 +1108,42 @@ def exportar_projeto_pdf(request, slug):
     response['Content-Disposition'] = f'attachment; filename="projeto_{projeto.slug}.pdf"'
     
     return response
+
+
+@login_required
+def projeto_visualizar_dados(request, slug):
+    """Visualizar dados do projeto (mapa e gráficos) - ENTREGA 5"""
+    projeto = get_object_or_404(Projeto, slug=slug)
+    
+    # Verificar permissão
+    if request.user.is_professor():
+        if projeto.grupo.turma.professor != request.user:
+            messages.error(request, 'Você não tem permissão.')
+            return redirect('dashboard')
+    else:
+        if request.user not in projeto.grupo.membros.all():
+            messages.error(request, 'Você não tem permissão.')
+            return redirect('dashboard')
+    
+    # Observações com geolocalização
+    observacoes_mapa = projeto.observacoes.filter(
+        latitude__isnull=False,
+        longitude__isnull=False
+    ).values('id', 'titulo', 'latitude', 'longitude', 'data_hora_coleta')
+    
+    # Estatísticas de observações
+    total_obs = projeto.observacoes.count()
+    obs_com_foto = projeto.observacoes.exclude(foto1='').count()
+    obs_com_geo = observacoes_mapa.count()
+    
+    context = {
+        'projeto': projeto,
+        'observacoes_mapa': list(observacoes_mapa),
+        'total_obs': total_obs,
+        'obs_com_foto': obs_com_foto,
+        'obs_com_geo': obs_com_geo,
+    }
+    return render(request, 'core/projeto_visualizar_dados.html', context)
 
 
 @login_required

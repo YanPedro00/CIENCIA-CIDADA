@@ -55,11 +55,14 @@
                 {% endif %}
                 
                 {% if user.tipo == 'professor' or user in projeto.grupo.membros.all %}
+                    <a href="{% url 'projeto_visualizar_dados' projeto.slug %}" class="btn btn-outline-info">
+                        <i class="bi bi-graph-up"></i> Visualizar Dados
+                    </a>
                     <a href="{% url 'exportar_projeto_pdf' projeto.slug %}" class="btn btn-outline-danger">
                         <i class="bi bi-file-pdf"></i> Exportar PDF
                     </a>
                     <a href="{% url 'exportar_observacoes_csv' projeto.slug %}" class="btn btn-outline-success">
-                        <i class="bi bi-file-spreadsheet"></i> Exportar Observações (CSV)
+                        <i class="bi bi-file-spreadsheet"></i> Exportar CSV
                     </a>
                 {% endif %}
             </div>
@@ -347,6 +350,58 @@
             </div>
             {% endif %}
 
+            <!-- Anexos do Projeto (ENTREGA 5) -->
+            {% if projeto.relatorio_final or projeto.apresentacao or projeto.foto_equipe or projeto.anexo_extra1 or projeto.anexo_extra2 or projeto.anexo_extra3 %}
+            <div class="card mb-3">
+                <div class="card-header bg-primary text-white">
+                    <h6 class="mb-0"><i class="bi bi-paperclip"></i> Anexos do Projeto</h6>
+                </div>
+                <div class="list-group list-group-flush">
+                    {% if projeto.relatorio_final %}
+                    <a href="{{ projeto.relatorio_final.url }}" target="_blank" class="list-group-item list-group-item-action">
+                        <i class="bi bi-file-earmark-pdf text-danger"></i> Relatório Final
+                        <small class="text-muted d-block">{{ projeto.relatorio_final.name|slice:"11:" }}</small>
+                    </a>
+                    {% endif %}
+                    
+                    {% if projeto.apresentacao %}
+                    <a href="{{ projeto.apresentacao.url }}" target="_blank" class="list-group-item list-group-item-action">
+                        <i class="bi bi-file-earmark-slides text-warning"></i> Apresentação
+                        <small class="text-muted d-block">{{ projeto.apresentacao.name|slice:"14:" }}</small>
+                    </a>
+                    {% endif %}
+                    
+                    {% if projeto.foto_equipe %}
+                    <a href="{{ projeto.foto_equipe.url }}" target="_blank" class="list-group-item list-group-item-action">
+                        <i class="bi bi-camera text-info"></i> Foto da Equipe
+                        <small class="text-muted d-block">{{ projeto.foto_equipe.name|slice:"13:" }}</small>
+                    </a>
+                    {% endif %}
+                    
+                    {% if projeto.anexo_extra1 %}
+                    <a href="{{ projeto.anexo_extra1.url }}" target="_blank" class="list-group-item list-group-item-action">
+                        <i class="bi bi-file-earmark"></i> Anexo Extra 1
+                        <small class="text-muted d-block">{{ projeto.anexo_extra1.name|slice:"8:" }}</small>
+                    </a>
+                    {% endif %}
+                    
+                    {% if projeto.anexo_extra2 %}
+                    <a href="{{ projeto.anexo_extra2.url }}" target="_blank" class="list-group-item list-group-item-action">
+                        <i class="bi bi-file-earmark"></i> Anexo Extra 2
+                        <small class="text-muted d-block">{{ projeto.anexo_extra2.name|slice:"8:" }}</small>
+                    </a>
+                    {% endif %}
+                    
+                    {% if projeto.anexo_extra3 %}
+                    <a href="{{ projeto.anexo_extra3.url }}" target="_blank" class="list-group-item list-group-item-action">
+                        <i class="bi bi-file-earmark"></i> Anexo Extra 3
+                        <small class="text-muted d-block">{{ projeto.anexo_extra3.name|slice:"8:" }}</small>
+                    </a>
+                    {% endif %}
+                </div>
+            </div>
+            {% endif %}
+            
             <!-- Feedbacks -->
             {% if feedbacks %}
             <div class="card">

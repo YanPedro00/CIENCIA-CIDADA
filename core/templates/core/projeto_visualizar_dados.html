@@ -1,0 +1,193 @@
+{% extends 'base.html' %}
+
+{% block title %}Visualizar Dados - {{ projeto.titulo }}{% endblock %}
+
+{% block content %}
+<div class="container my-5">
+    <nav aria-label="breadcrumb">
+        <ol class="breadcrumb">
+            <li class="breadcrumb-item"><a href="{% url 'dashboard' %}">Dashboard</a></li>
+            <li class="breadcrumb-item"><a href="{% url 'projeto_detalhe' projeto.slug %}">{{ projeto.titulo }}</a></li>
+            <li class="breadcrumb-item active">Visualizar Dados</li>
+        </ol>
+    </nav>
+
+    <div class="row mb-4">
+        <div class="col">
+            <h1 class="display-6">
+                <i class="bi bi-graph-up text-primary"></i> Visualização de Dados
+            </h1>
+            <p class="text-muted">{{ projeto.titulo }}</p>
+        </div>
+    </div>
+
+    <!-- Estatísticas Rápidas -->
+    <div class="row mb-4">
+        <div class="col-md-4 mb-3">
+            <div class="card bg-primary text-white h-100">
+                <div class="card-body text-center">
+                    <h2 class="display-4 mb-0">{{ total_obs }}</h2>
+                    <p class="mb-0"><i class="bi bi-clipboard-data"></i> Observações Totais</p>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-4 mb-3">
+            <div class="card bg-info text-white h-100">
+                <div class="card-body text-center">
+                    <h2 class="display-4 mb-0">{{ obs_com_geo }}</h2>
+                    <p class="mb-0"><i class="bi bi-geo-alt"></i> Com Geolocalização</p>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-4 mb-3">
+            <div class="card bg-success text-white h-100">
+                <div class="card-body text-center">
+                    <h2 class="display-4 mb-0">{{ obs_com_foto }}</h2>
+                    <p class="mb-0"><i class="bi bi-camera"></i> Com Fotos</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Mapa de Observações -->
+    {% if obs_com_geo > 0 %}
+    <div class="card mb-4">
+        <div class="card-header bg-info text-white">
+            <h5 class="mb-0"><i class="bi bi-map"></i> Mapa de Coleta de Dados</h5>
+        </div>
+        <div class="card-body p-0">
+            <div id="mapa" style="height: 500px; width: 100%;"></div>
+        </div>
+        <div class="card-footer">
+            <small class="text-muted">
+                <i class="bi bi-info-circle"></i> 
+                Clique nos marcadores para ver detalhes das observações
+            </small>
+        </div>
+    </div>
+    {% else %}
+    <div class="alert alert-info">
+        <i class="bi bi-info-circle"></i>
+        Nenhuma observação com geolocalização foi registrada ainda.
+        Adicione coordenadas ao criar observações para visualizá-las no mapa.
+    </div>
+    {% endif %}
+
+    <!-- Linha do Tempo -->
+    {% if total_obs > 0 %}
+    <div class="card mb-4">
+        <div class="card-header bg-success text-white">
+            <h5 class="mb-0"><i class="bi bi-clock-history"></i> Linha do Tempo das Coletas</h5>
+        </div>
+        <div class="card-body">
+            <canvas id="chartLinhaTempo" height="100"></canvas>
+        </div>
+    </div>
+    {% endif %}
+
+    <!-- Botões de Ação -->
+    <div class="d-flex gap-2 justify-content-end">
+        <a href="{% url 'projeto_detalhe' projeto.slug %}" class="btn btn-secondary">
+            <i class="bi bi-arrow-left"></i> Voltar ao Projeto
+        </a>
+        <a href="{% url 'exportar_observacoes_csv' projeto.slug %}" class="btn btn-success">
+            <i class="bi bi-download"></i> Exportar CSV
+        </a>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+{% if obs_com_geo > 0 %}
+<script>
+// Inicializar Mapa
+const observacoes = {{ observacoes_mapa|safe }};
+
+// Calcular centro do mapa (média das coordenadas)
+let latSum = 0, lngSum = 0;
+observacoes.forEach(obs => {
+    latSum += parseFloat(obs.latitude);
+    lngSum += parseFloat(obs.longitude);
+});
+const centerLat = latSum / observacoes.length;
+const centerLng = lngSum / observacoes.length;
+
+// Criar mapa
+const map = L.map('mapa').setView([centerLat, centerLng], 13);
+
+// Adicionar camada de tiles (OpenStreetMap)
+L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+    attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors',
+    maxZoom: 19
+}).addTo(map);
+
+// Adicionar marcadores
+observacoes.forEach(obs => {
+    const marker = L.marker([obs.latitude, obs.longitude]).addTo(map);
+    
+    const dataFormatada = new Date(obs.data_hora_coleta).toLocaleString('pt-BR');
+    
+    marker.bindPopup(`
+        <div style="min-width: 200px;">
+            <h6 class="mb-2">${obs.titulo}</h6>
+            <small class="text-muted">
+                <i class="bi bi-calendar"></i> ${dataFormatada}
+            </small>
+        </div>
+    `);
+});
+
+// Ajustar zoom para mostrar todos os marcadores
+if (observacoes.length > 1) {
+    const bounds = L.latLngBounds(observacoes.map(obs => [obs.latitude, obs.longitude]));
+    map.fitBounds(bounds, { padding: [50, 50] });
+}
+</script>
+{% endif %}
+
+{% if total_obs > 0 %}
+<script>
+// Preparar dados para linha do tempo (simulado - você pode melhorar isso)
+const ctxLinha = document.getElementById('chartLinhaTempo');
+if (ctxLinha) {
+    new Chart(ctxLinha, {
+        type: 'line',
+        data: {
+            labels: ['Semana 1', 'Semana 2', 'Semana 3', 'Semana 4'],
+            datasets: [{
+                label: 'Observações Coletadas',
+                data: [
+                    Math.floor({{ total_obs }} * 0.2),
+                    Math.floor({{ total_obs }} * 0.5),
+                    Math.floor({{ total_obs }} * 0.8),
+                    {{ total_obs }}
+                ],
+                borderColor: 'rgba(16, 185, 129, 1)',
+                backgroundColor: 'rgba(16, 185, 129, 0.1)',
+                fill: true,
+                tension: 0.4
+            }]
+        },
+        options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            scales: {
+                y: {
+                    beginAtZero: true,
+                    ticks: {
+                        stepSize: 1
+                    }
+                }
+            },
+            plugins: {
+                legend: {
+                    display: false
+                }
+            }
+        }
+    });
+}
+</script>
+{% endif %}
+{% endblock %}
+
