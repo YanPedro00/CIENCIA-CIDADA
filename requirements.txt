@@ -37,3 +37,7 @@ plotly==5.18.0
 folium==0.15.1
 matplotlib==3.8.2
 
+# Armazenamento de Mídia (Cloudinary)
+django-cloudinary-storage==0.3.0
+cloudinary==1.36.0
+
