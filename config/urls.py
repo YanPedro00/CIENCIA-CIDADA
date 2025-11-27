@@ -29,7 +29,10 @@ urlpatterns = [
     path('', include('core.urls')),
 ]
 
-# Servir arquivos de media em desenvolvimento
+# Servir arquivos de media e static
+# NOTA: Em produção, idealmente usar S3/Cloudinary para mídia
+# Railway tem armazenamento efêmero (arquivos perdidos a cada deploy)
+urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
+
 if settings.DEBUG:
-    urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
     urlpatterns += static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)

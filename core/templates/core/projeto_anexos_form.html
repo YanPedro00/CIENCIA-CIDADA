@@ -21,10 +21,17 @@
                     </h4>
                 </div>
                 <div class="card-body">
-                    <p class="text-muted">
-                        Anexe documentos e fotos importantes do projeto. Esses arquivos ficarão disponíveis
-                        no relatório do projeto e poderão ser visualizados pelo professor.
-                    </p>
+                    <div class="alert alert-info mb-3">
+                        <i class="bi bi-info-circle"></i>
+                        <strong>Importante:</strong> Anexe documentos e fotos importantes do projeto. 
+                        Esses arquivos ficarão disponíveis no relatório do projeto e poderão ser visualizados pelo professor.
+                        
+                        <hr class="my-2">
+                        <small>
+                            <strong>⚠️ Limitação do Railway:</strong> Arquivos enviados podem ser perdidos em atualizações do sistema. 
+                            Para armazenamento permanente, considere usar links externos (Google Drive, Dropbox) no campo de descrição.
+                        </small>
+                    </div>
 
                     <form method="post" enctype="multipart/form-data">
                         {% csrf_token %}
