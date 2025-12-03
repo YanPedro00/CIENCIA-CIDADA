@@ -420,6 +420,120 @@ Pontos acumulados por grupos (gamificação).
 
 ---
 
+## DASHBOARDS E VISUALIZAÇÕES
+
+### Dashboards Implementados
+
+#### 1. Dashboard Professor
+- **Gráfico de Pizza:** Status dos projetos (rascunho, em andamento, concluído)
+- **Gráfico de Barras:** Top 5 áreas científicas mais populares
+- **Estatísticas:** Total de turmas, grupos, projetos, estudantes
+- **Lista:** Projetos recentes com fase atual e progresso
+
+#### 2. Dashboard Estudante
+- **Card de Grupo:** Informações do grupo e membros
+- **Progresso do Projeto:** Barra de progresso visual (0-100%)
+- **Fases Concluídas:** Checklist das 6 fases
+- **Badges Conquistadas:** Lista de conquistas com ícones
+- **Pontuação:** Total de pontos do grupo
+
+#### 3. Página Inicial (Home Pública)
+- **Cards de Estatísticas:**
+  - Total de projetos cadastrados
+  - Total de estudantes ativos
+  - Total de turmas ativas
+  - Total de dados coletados (observações)
+- **Gráfico de Pizza:** Distribuição de projetos por status
+- **Projetos em Destaque:** Cards com projetos concluídos
+- **Fases do Método Científico:** Explicação visual das 6 fases
+
+#### 4. Visualização de Dados do Projeto
+- **Mapa Interativo (Leaflet):** 
+  - Pontos de coleta de observações
+  - Marcadores com informações (título, data, local)
+  - Popup com detalhes ao clicar
+- **Gráficos Plotly:**
+  - Linha temporal de observações
+  - Distribuição de dados coletados
+  - Análises customizadas por projeto
+
+### Tecnologias de Visualização
+
+| Tecnologia | Uso | Descrição |
+|------------|-----|-----------|
+| **Chart.js** | Gráficos | Biblioteca JavaScript para gráficos interativos (pizza, barras, linhas) |
+| **Leaflet** | Mapas | Mapas interativos com marcadores de geolocalização |
+| **Plotly** | Análises | Gráficos científicos avançados para análise de dados |
+| **Bootstrap Cards** | Interface | Cards responsivos para estatísticas e informações |
+| **Progress Bars** | Progresso | Barras visuais de progresso das fases do projeto |
+
+### Exportação de Relatórios
+
+#### 1. Exportação PDF (ReportLab)
+- **Relatório do Projeto:**
+  - Título e informações básicas
+  - Todas as 6 fases preenchidas
+  - Lista de observações
+  - Metadados (data de criação, conclusão)
+- **Formato:** PDF profissional com logo e formatação
+
+#### 2. Exportação CSV (Pandas/OpenPyXL)
+- **Observações do Projeto:**
+  - Título, descrição, data/hora de coleta
+  - Localização (latitude, longitude, descrição)
+  - Dados estruturados (JSON)
+- **Formato:** CSV compatível com Excel e análise estatística
+
+#### 3. Exportação Excel
+- **Dados Tabulares:**
+  - Observações organizadas em planilha
+  - Colunas formatadas
+  - Pronto para análise em Excel/Google Sheets
+
+### Queries Principais para Dashboards
+
+```python
+# Estatísticas Gerais
+Projeto.objects.count()
+Usuario.objects.filter(tipo='estudante').count()
+Turma.objects.filter(ativa=True).count()
+Observacao.objects.count()
+
+# Projetos por Status (Gráfico Pizza)
+Projeto.objects.values('status').annotate(total=Count('id'))
+
+# Top 5 Áreas Científicas (Gráfico Barras)
+Projeto.objects.values('area_ciencia').annotate(
+    total=Count('id')
+).order_by('-total')[:5]
+
+# Progresso do Projeto
+projeto.get_progresso_percentual()  # Retorna 0-100%
+
+# Observações com Geolocalização (Mapa)
+Observacao.objects.filter(
+    projeto=projeto,
+    latitude__isnull=False,
+    longitude__isnull=False
+)
+
+# Badges do Usuário
+usuario.badges_conquistadas.all().select_related('badge')
+
+# Pontuação do Grupo
+grupo.pontuacao.pontos_totais
+```
+
+### Performance e Otimização
+
+- **Select Related:** Reduz queries N+1 em relacionamentos FK
+- **Prefetch Related:** Otimiza queries M2M (membros, badges)
+- **Agregações no Banco:** COUNT, SUM, AVG executados no PostgreSQL
+- **Cache de Template:** Fragmentos de dashboard cacheados
+- **JSON Field:** Dados flexíveis sem queries extras
+
+---
+
 ## TECNOLOGIAS DE ARMAZENAMENTO
 
 ### Banco de Dados Principal
