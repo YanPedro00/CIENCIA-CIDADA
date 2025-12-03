@@ -4,6 +4,7 @@ from django.core.validators import MinValueValidator, MaxValueValidator
 from django.utils import timezone
 from django.utils.text import slugify
 import uuid
+from .storage import DocumentStorage
 
 
 class Usuario(AbstractUser):
@@ -363,6 +364,7 @@ class Projeto(models.Model):
         upload_to='relatorios/',
         blank=True,
         null=True,
+        storage=DocumentStorage(),
         verbose_name='Relatório Final (PDF/DOCX)',
         help_text='Documento completo do projeto'
     )
@@ -370,6 +372,7 @@ class Projeto(models.Model):
         upload_to='apresentacoes/',
         blank=True,
         null=True,
+        storage=DocumentStorage(),
         verbose_name='Apresentação (PPT/PDF)',
         help_text='Slides da apresentação do projeto'
     )
@@ -384,18 +387,21 @@ class Projeto(models.Model):
         upload_to='anexos/',
         blank=True,
         null=True,
+        storage=DocumentStorage(),
         verbose_name='Anexo Extra 1'
     )
     anexo_extra2 = models.FileField(
         upload_to='anexos/',
         blank=True,
         null=True,
+        storage=DocumentStorage(),
         verbose_name='Anexo Extra 2'
     )
     anexo_extra3 = models.FileField(
         upload_to='anexos/',
         blank=True,
         null=True,
+        storage=DocumentStorage(),
         verbose_name='Anexo Extra 3'
     )
     
@@ -767,6 +773,7 @@ class Atividade(models.Model):
         upload_to='atividades/',
         blank=True,
         null=True,
+        storage=DocumentStorage(),
         verbose_name='Arquivo Anexo'
     )
     
