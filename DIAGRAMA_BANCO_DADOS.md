@@ -1,6 +1,6 @@
-# 🗄️ DIAGRAMA DO BANCO DE DADOS - Ciência Cidadã
+# DIAGRAMA DO BANCO DE DADOS - Ciência Cidadã
 
-## 📊 DIAGRAMA ENTIDADE-RELACIONAMENTO (ER)
+## DIAGRAMA ENTIDADE-RELACIONAMENTO (ER)
 
 ```mermaid
 erDiagram
@@ -30,9 +30,9 @@ erDiagram
 
 ---
 
-## 📋 TABELAS DO SISTEMA
+## TABELAS DO SISTEMA
 
-### 1️⃣ **Usuario** (Usuários do Sistema)
+### 1. **Usuario** (Usuários do Sistema)
 Estende `AbstractUser` do Django, adicionando campos customizados.
 
 | Campo | Tipo | Descrição |
@@ -62,7 +62,7 @@ Estende `AbstractUser` do Django, adicionando campos customizados.
 
 ---
 
-### 2️⃣ **Turma** (Turmas/Classes)
+### 2. **Turma** (Turmas/Classes)
 Criada por professores, onde estudantes se inscrevem.
 
 | Campo | Tipo | Descrição |
@@ -87,7 +87,7 @@ Criada por professores, onde estudantes se inscrevem.
 
 ---
 
-### 3️⃣ **Grupo** (Grupos de Trabalho)
+### 3. **Grupo** (Grupos de Trabalho)
 Grupos de estudantes que trabalham juntos em projetos.
 
 | Campo | Tipo | Descrição |
@@ -110,7 +110,7 @@ Grupos de estudantes que trabalham juntos em projetos.
 
 ---
 
-### 4️⃣ **Projeto** (Projetos Científicos)
+### 4. **Projeto** (Projetos Científicos)
 Projetos seguindo as 6 fases do método científico.
 
 | Campo | Tipo | Descrição |
@@ -184,7 +184,7 @@ Projetos seguindo as 6 fases do método científico.
 
 ---
 
-### 5️⃣ **Observacao** (Dados Coletados - Fase 4)
+### 5. **Observacao** (Dados Coletados - Fase 4)
 Dados científicos coletados durante a Fase 4.
 
 | Campo | Tipo | Descrição |
@@ -211,7 +211,7 @@ Dados científicos coletados durante a Fase 4.
 
 ---
 
-### 6️⃣ **Feedback** (Feedbacks do Professor)
+### 6. **Feedback** (Feedbacks do Professor)
 Comentários do professor sobre fases específicas.
 
 | Campo | Tipo | Descrição |
@@ -230,7 +230,7 @@ Comentários do professor sobre fases específicas.
 
 ---
 
-### 7️⃣ **Avaliacao** (Avaliação Final)
+### 7. **Avaliacao** (Avaliação Final)
 Avaliação final do projeto pelo professor.
 
 | Campo | Tipo | Descrição |
@@ -257,7 +257,7 @@ Avaliação final do projeto pelo professor.
 
 ---
 
-### 8️⃣ **EstudanteTurma** (Relação M:N - Estudante ↔ Turma)
+### 8. **EstudanteTurma** (Relação M:N - Estudante ↔ Turma)
 Tabela intermediária para relacionamento Many-to-Many.
 
 | Campo | Tipo | Descrição |
@@ -275,7 +275,7 @@ Tabela intermediária para relacionamento Many-to-Many.
 
 ---
 
-### 9️⃣ **Atividade** (Atividades da Turma)
+### 9. **Atividade** (Atividades da Turma)
 Atividades, tarefas e materiais postados pelo professor.
 
 | Campo | Tipo | Descrição |
@@ -299,7 +299,7 @@ Atividades, tarefas e materiais postados pelo professor.
 
 ---
 
-### 🔟 **Badge** (Badges/Conquistas)
+### 10. **Badge** (Badges/Conquistas)
 Conquistas que podem ser obtidas por estudantes.
 
 | Campo | Tipo | Descrição |
@@ -330,7 +330,7 @@ Conquistas que podem ser obtidas por estudantes.
 
 ---
 
-### 1️⃣1️⃣ **UsuarioBadge** (Relação M:N - Usuario ↔ Badge)
+### 11. **UsuarioBadge** (Relação M:N - Usuario ↔ Badge)
 Tabela intermediária para badges conquistadas.
 
 | Campo | Tipo | Descrição |
@@ -348,7 +348,7 @@ Tabela intermediária para badges conquistadas.
 
 ---
 
-### 1️⃣2️⃣ **PontuacaoGrupo** (Pontuação de Grupos)
+### 12. **PontuacaoGrupo** (Pontuação de Grupos)
 Pontos acumulados por grupos (gamificação).
 
 | Campo | Tipo | Descrição |
@@ -363,7 +363,7 @@ Pontos acumulados por grupos (gamificação).
 
 ---
 
-## 🔗 RESUMO DOS RELACIONAMENTOS
+## RESUMO DOS RELACIONAMENTOS
 
 ### Relacionamentos 1:1 (One-to-One)
 - **Grupo** ↔ **Projeto** - Cada grupo tem um projeto único
@@ -390,7 +390,7 @@ Pontos acumulados por grupos (gamificação).
 
 ---
 
-## 📊 ESTATÍSTICAS DO BANCO
+## ESTATÍSTICAS DO BANCO
 
 | Métrica | Valor |
 |---------|-------|
@@ -405,7 +405,7 @@ Pontos acumulados por grupos (gamificação).
 
 ---
 
-## 🎯 FLUXO DE DADOS PRINCIPAL
+## FLUXO DE DADOS PRINCIPAL
 
 1. **Professor** cria uma **Turma**
 2. **Estudantes** se inscrevem na **Turma** (via `EstudanteTurma`)
@@ -420,7 +420,7 @@ Pontos acumulados por grupos (gamificação).
 
 ---
 
-## 💾 TECNOLOGIAS DE ARMAZENAMENTO
+## TECNOLOGIAS DE ARMAZENAMENTO
 
 ### Banco de Dados Principal
 - **Desenvolvimento:** SQLite (padrão Django)
@@ -442,7 +442,7 @@ Pontos acumulados por grupos (gamificação).
 
 ---
 
-## 🔐 SEGURANÇA E PERMISSÕES
+## SEGURANÇA E PERMISSÕES
 
 ### Tipos de Usuário
 1. **Professor**
@@ -470,7 +470,7 @@ Pontos acumulados por grupos (gamificação).
 
 ---
 
-## 📁 ARQUIVOS DE MIGRAÇÃO
+## ARQUIVOS DE MIGRAÇÃO
 
 Todas as alterações no banco são versionadas via migrações Django:
 
@@ -483,7 +483,7 @@ Todas as alterações no banco são versionadas via migrações Django:
 
 ---
 
-## 🛠️ COMANDOS ÚTEIS
+## COMANDOS ÚTEIS
 
 ### Ver estrutura das tabelas (SQL)
 ```bash
@@ -517,7 +517,7 @@ python manage.py loaddata backup.json
 
 ---
 
-## 📖 REFERÊNCIAS
+## REFERÊNCIAS
 
 - [Django Models Documentation](https://docs.djangoproject.com/en/4.2/topics/db/models/)
 - [PostgreSQL Documentation](https://www.postgresql.org/docs/)
