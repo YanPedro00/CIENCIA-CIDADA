@@ -57,6 +57,7 @@ urlpatterns = [
     
     # Anexos e Exportações (Entrega 5)
     path('projetos/<slug:slug>/anexos/', views.projeto_anexos, name='projeto_anexos'),
+    path('projetos/<slug:slug>/anexos/deletar/<str:campo>/', views.projeto_deletar_anexo, name='projeto_deletar_anexo'),
     path('projetos/<slug:slug>/visualizar-dados/', views.projeto_visualizar_dados, name='projeto_visualizar_dados'),
     path('projetos/<slug:slug>/exportar-pdf/', views.exportar_projeto_pdf, name='exportar_projeto_pdf'),
     path('projetos/<slug:slug>/exportar-csv/', views.exportar_observacoes_csv, name='exportar_observacoes_csv'),

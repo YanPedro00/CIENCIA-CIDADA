@@ -932,6 +932,43 @@ def projeto_anexos(request, slug):
     return render(request, 'core/projeto_anexos_form.html', context)
 
 
+@login_required
+def projeto_deletar_anexo(request, slug, campo):
+    """Deletar um anexo específico do projeto"""
+    projeto = get_object_or_404(Projeto, slug=slug)
+    
+    # Verificar permissão (apenas membros do grupo ou professor)
+    if request.user.is_estudante():
+        if request.user not in projeto.grupo.membros.all():
+            messages.error(request, 'Você não tem permissão para editar este projeto.')
+            return redirect('projeto_detalhe', slug=slug)
+    elif request.user.is_professor():
+        if projeto.grupo.turma.professor != request.user:
+            messages.error(request, 'Você não tem permissão para acessar este projeto.')
+            return redirect('dashboard')
+    
+    # Lista de campos válidos
+    campos_validos = ['relatorio_final', 'apresentacao', 'foto_equipe', 'anexo_extra1', 'anexo_extra2', 'anexo_extra3']
+    
+    if campo not in campos_validos:
+        messages.error(request, 'Campo inválido.')
+        return redirect('projeto_detalhe', slug=slug)
+    
+    # Deletar arquivo
+    arquivo = getattr(projeto, campo)
+    if arquivo:
+        # Deletar do Cloudinary
+        arquivo.delete(save=False)
+        # Limpar campo no banco
+        setattr(projeto, campo, None)
+        projeto.save()
+        messages.success(request, f'Arquivo deletado com sucesso!')
+    else:
+        messages.warning(request, 'Nenhum arquivo para deletar.')
+    
+    return redirect('projeto_anexos', slug=slug)
+
+
 # ============== Exportação de Relatórios ==============
 
 @login_required

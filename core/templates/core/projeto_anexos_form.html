@@ -48,13 +48,18 @@
                                 <div class="form-text">{{ form.relatorio_final.help_text }}</div>
                                 {% endif %}
                                 {% if projeto.relatorio_final %}
-                                <div class="mt-2">
+                                <div class="mt-2 d-flex align-items-center justify-content-between">
                                     <small class="text-success">
                                         <i class="bi bi-check-circle"></i> Arquivo anexado:
                                         <a href="{{ projeto.relatorio_final.url }}" target="_blank">
                                             {{ projeto.relatorio_final.name|truncatechars:30 }}
                                         </a>
                                     </small>
+                                    <a href="{% url 'projeto_deletar_anexo' projeto.slug 'relatorio_final' %}" 
+                                       class="btn btn-sm btn-outline-danger"
+                                       onclick="return confirm('Tem certeza que deseja deletar este arquivo?')">
+                                        <i class="bi bi-trash"></i>
+                                    </a>
                                 </div>
                                 {% endif %}
                                 {% if form.relatorio_final.errors %}
@@ -75,13 +80,18 @@
                                 <div class="form-text">{{ form.apresentacao.help_text }}</div>
                                 {% endif %}
                                 {% if projeto.apresentacao %}
-                                <div class="mt-2">
+                                <div class="mt-2 d-flex align-items-center justify-content-between">
                                     <small class="text-success">
                                         <i class="bi bi-check-circle"></i> Arquivo anexado:
                                         <a href="{{ projeto.apresentacao.url }}" target="_blank">
                                             {{ projeto.apresentacao.name|truncatechars:30 }}
                                         </a>
                                     </small>
+                                    <a href="{% url 'projeto_deletar_anexo' projeto.slug 'apresentacao' %}" 
+                                       class="btn btn-sm btn-outline-danger"
+                                       onclick="return confirm('Tem certeza que deseja deletar este arquivo?')">
+                                        <i class="bi bi-trash"></i>
+                                    </a>
                                 </div>
                                 {% endif %}
                                 {% if form.apresentacao.errors %}
@@ -106,6 +116,13 @@
                                 {% if projeto.foto_equipe %}
                                 <div class="mt-3">
                                     <img src="{{ projeto.foto_equipe.url }}" alt="Foto da Equipe" class="img-thumbnail" style="max-width: 300px;">
+                                    <div class="mt-2">
+                                        <a href="{% url 'projeto_deletar_anexo' projeto.slug 'foto_equipe' %}" 
+                                           class="btn btn-sm btn-outline-danger"
+                                           onclick="return confirm('Tem certeza que deseja deletar esta foto?')">
+                                            <i class="bi bi-trash"></i> Deletar Foto
+                                        </a>
+                                    </div>
                                 </div>
                                 {% endif %}
                                 {% if form.foto_equipe.errors %}
@@ -131,13 +148,18 @@
                                 </label>
                                 {{ form.anexo_extra1 }}
                                 {% if projeto.anexo_extra1 %}
-                                <div class="mt-2">
-                                    <small class="text-success">
+                                <div class="mt-2 d-flex flex-column">
+                                    <small class="text-success mb-1">
                                         <i class="bi bi-check-circle"></i>
                                         <a href="{{ projeto.anexo_extra1.url }}" target="_blank">
                                             {{ projeto.anexo_extra1.name|truncatechars:20 }}
                                         </a>
                                     </small>
+                                    <a href="{% url 'projeto_deletar_anexo' projeto.slug 'anexo_extra1' %}" 
+                                       class="btn btn-sm btn-outline-danger"
+                                       onclick="return confirm('Tem certeza que deseja deletar este arquivo?')">
+                                        <i class="bi bi-trash"></i>
+                                    </a>
                                 </div>
                                 {% endif %}
                             </div>
@@ -150,13 +172,18 @@
                                 </label>
                                 {{ form.anexo_extra2 }}
                                 {% if projeto.anexo_extra2 %}
-                                <div class="mt-2">
-                                    <small class="text-success">
+                                <div class="mt-2 d-flex flex-column">
+                                    <small class="text-success mb-1">
                                         <i class="bi bi-check-circle"></i>
                                         <a href="{{ projeto.anexo_extra2.url }}" target="_blank">
                                             {{ projeto.anexo_extra2.name|truncatechars:20 }}
                                         </a>
                                     </small>
+                                    <a href="{% url 'projeto_deletar_anexo' projeto.slug 'anexo_extra2' %}" 
+                                       class="btn btn-sm btn-outline-danger"
+                                       onclick="return confirm('Tem certeza que deseja deletar este arquivo?')">
+                                        <i class="bi bi-trash"></i>
+                                    </a>
                                 </div>
                                 {% endif %}
                             </div>
@@ -169,13 +196,18 @@
                                 </label>
                                 {{ form.anexo_extra3 }}
                                 {% if projeto.anexo_extra3 %}
-                                <div class="mt-2">
-                                    <small class="text-success">
+                                <div class="mt-2 d-flex flex-column">
+                                    <small class="text-success mb-1">
                                         <i class="bi bi-check-circle"></i>
                                         <a href="{{ projeto.anexo_extra3.url }}" target="_blank">
                                             {{ projeto.anexo_extra3.name|truncatechars:20 }}
                                         </a>
                                     </small>
+                                    <a href="{% url 'projeto_deletar_anexo' projeto.slug 'anexo_extra3' %}" 
+                                       class="btn btn-sm btn-outline-danger"
+                                       onclick="return confirm('Tem certeza que deseja deletar este arquivo?')">
+                                        <i class="bi bi-trash"></i>
+                                    </a>
                                 </div>
                                 {% endif %}
                             </div>
