@@ -22,14 +22,50 @@
 
 ### 1.2 Credenciais de Teste
 
-**Professor:**
-- Usuário: `professor`
-- Senha: `senha123`
-- Turma de Demonstração: Código `A1B2C3D4`
+**Administrador do Sistema:**
+- Usuário: `admin`
+- Senha: `admin123456`
+- Acesso: Painel administrativo Django completo
 
-**Estudante:**
-- Usuário: `estudante`
-- Senha: `senha123`
+**Professor 1 (Prof. Carlos Silva):**
+- Usuário: `prof_teste`
+- Senha: `prof123456`
+- Email: prof.teste@escola.com
+- Instituição: Escola Estadual Exemplo
+
+**Estudante 1 (João Santos):**
+- Usuário: `aluno1`
+- Senha: `aluno123456`
+- Email: joao.santos@email.com
+
+**Estudante 2 (Ana Costa):**
+- Usuário: `aluno2`
+- Senha: `aluno123456`
+- Email: ana.costa@email.com
+
+**Estudante 3 (Pedro Oliveira):**
+- Usuário: `aluno3`
+- Senha: `aluno123456`
+- Email: pedro.oliveira@email.com
+
+**Estudante 4 (Maria Souza):**
+- Usuário: `aluno4`
+- Senha: `aluno123456`
+- Email: maria.souza@email.com
+
+**Turma de Demonstração:**
+- Código de Acesso: `A1B2C3D4`
+
+**Resumo Rápido:**
+
+| Tipo | Usuário | Senha |
+|------|---------|-------|
+| Admin | admin | admin123456 |
+| Professor | prof_teste | prof123456 |
+| Estudante 1 | aluno1 | aluno123456 |
+| Estudante 2 | aluno2 | aluno123456 |
+| Estudante 3 | aluno3 | aluno123456 |
+| Estudante 4 | aluno4 | aluno123456 |
 
 ---
 
